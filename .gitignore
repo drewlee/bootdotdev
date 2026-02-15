@@ -4,3 +4,4 @@ __pycache__
 .DS_Store
 webflyx
 asteroids/game_state.jsonl
+asteroids/game_events.jsonl
