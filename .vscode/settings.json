@@ -4,6 +4,8 @@
     "bookbot",
     "circleshape",
     "cooldown",
+    "dotenv",
+    "genai",
     "venv"
   ]
 }
