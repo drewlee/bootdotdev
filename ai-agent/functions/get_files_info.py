@@ -26,10 +26,7 @@ def get_files_info(working_directory, directory="."):
             out_list.append(f"- {item}: file_size={file_size} bytes, is_dir={is_dir}")
         out_list.sort()
 
-        msg_dir = "." if directory == "." else f'"{directory}"'
-        msg = f"Result for {msg_dir} directory:\n"
-        out = msg + "\n".join(out_list)
+        return "\n".join(out_list)
 
-        return out
     except Exception as e:
         return f"Error: {e}"
