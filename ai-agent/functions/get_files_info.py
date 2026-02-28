@@ -28,5 +28,5 @@ def get_files_info(working_directory, directory="."):
 
         return "\n".join(out_list)
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=[broad-exception-caught]
         return f"Error: {e}"

@@ -1,14 +1,10 @@
 import os
-from config import MAX_CHARS
 
 
-def get_file_content(working_directory, file_path):
+def write_file(working_directory, file_path, content):
     try:
         working_dir_abs = os.path.abspath(working_directory)
         target_file = os.path.normpath(os.path.join(working_dir_abs, file_path))
-        if not os.path.isfile(target_file):
-            return f'Error: File not found or is not a regular file: "{file_path}"'
-
         valid_target_file = (
             os.path.commonpath([working_dir_abs, target_file]) == working_dir_abs
         )
@@ -19,13 +15,16 @@ def get_file_content(working_directory, file_path):
                 "outside the permitted working directory"
             )
 
-        with open(file=target_file, encoding="utf-8") as file:
-            content = file.read(MAX_CHARS)
-            if file.read(1):
-                content += (
-                    f'[...File "{file_path}" truncated at {MAX_CHARS} characters]'
-                )
+        if os.path.isdir(target_file):
+            return f'Error: Cannot write to "{file_path}" as it is a directory'
 
-        return content
+        os.makedirs(os.path.dirname(target_file), exist_ok=True)
+
+        with open(file=target_file, mode="w", encoding="utf-8") as file:
+            file.write(content)
+
+        return (
+            f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
+        )
     except Exception as e:  # pylint: disable=[broad-exception-caught]
         return f"Error: {e}"

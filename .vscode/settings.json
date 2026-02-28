@@ -1,11 +1,14 @@
 {
-  "cSpell.words": [
-    "asteroidfield",
-    "bookbot",
-    "circleshape",
-    "cooldown",
-    "dotenv",
-    "genai",
-    "venv"
-  ]
+    "editor.tabSize": 4,
+    "cSpell.words": [
+        "amet",
+        "asteroidfield",
+        "bookbot",
+        "circleshape",
+        "cooldown",
+        "dotenv",
+        "genai",
+        "morelorem",
+        "venv"
+    ]
 }
