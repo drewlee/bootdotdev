@@ -2,6 +2,7 @@ import argparse
 import os
 from dotenv import load_dotenv
 from google import genai
+from prompts import SYSTEM_PROMPT
 
 
 def main():
@@ -15,14 +16,19 @@ def main():
     parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
 
+    client = genai.Client(api_key=api_key)
+    model_name = "gemini-2.5-flash"
     messages = [
         genai.types.Content(
             role="user", parts=[genai.types.Part(text=args.user_prompt)]
         )
     ]
-    model = "gemini-2.5-flash"
-    client = genai.Client(api_key=api_key)
-    response = client.models.generate_content(model=model, contents=messages)
+    config = genai.types.GenerateContentConfig(
+        system_instruction=SYSTEM_PROMPT, temperature=0
+    )
+    response = client.models.generate_content(
+        model=model_name, contents=messages, config=config
+    )
 
     if response.usage_metadata is None:
         raise RuntimeError("No response from Gemini API")
