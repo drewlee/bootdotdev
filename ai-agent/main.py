@@ -2,7 +2,9 @@ import argparse
 import os
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 from prompts import SYSTEM_PROMPT
+from call_function import available_functions
 
 
 def main():
@@ -18,26 +20,27 @@ def main():
 
     client = genai.Client(api_key=api_key)
     model_name = "gemini-2.5-flash"
-    messages = [
-        genai.types.Content(
-            role="user", parts=[genai.types.Part(text=args.user_prompt)]
-        )
-    ]
-    config = genai.types.GenerateContentConfig(
-        system_instruction=SYSTEM_PROMPT, temperature=0
+    messages = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)])]
+    config = types.GenerateContentConfig(
+        tools=[available_functions], system_instruction=SYSTEM_PROMPT
     )
     response = client.models.generate_content(
         model=model_name, contents=messages, config=config
     )
 
-    if response.usage_metadata is None:
+    if not response.usage_metadata:
         raise RuntimeError("No response from Gemini API")
 
     if args.verbose:
         print(f"User prompt:\n{args.user_prompt}")
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
-    print(f"Response:\n{response.text}")
+
+    if response.function_calls:
+        for call in response.function_calls:
+            print(f"Calling function: {call.name}({call.args})")
+    else:
+        print(f"Response:\n{response.text}")
 
 
 if __name__ == "__main__":
