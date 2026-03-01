@@ -19,7 +19,7 @@ def main():
             print(to_print)
         else:
             print("Error: Expression is empty or contains only whitespace.")
-    except Exception as e:
+    except Exception as e:  # pylint: disable=[broad-exception-caught]
         print(f"Error: {e}")
 
 

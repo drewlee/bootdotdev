@@ -1,5 +1,5 @@
 import os
-from config import MAX_CHARS
+from config import MAX_CHARS  # pylint: disable=[import-error]
 
 
 def get_file_content(working_directory, file_path):
