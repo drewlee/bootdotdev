@@ -8,6 +8,8 @@
         "cooldown",
         "dotenv",
         "genai",
+        "htmlnode",
+        "leafnode",
         "morelorem",
         "textnode",
         "venv"
