@@ -18,6 +18,16 @@ class TestHTMLNode(unittest.TestCase):
             node.props_to_html(), ' href="https://www.google.com" target="_blank"'
         )
 
+    def test_html_node_repr(self):
+        node = HTMLNode("p", None, None, {"class": "foo", "id": "bar"})
+        self.assertEqual(
+            str(node),
+            (
+                'HTMLNode(tag="p", value="None", children="None", '
+                "props=\"{'class': 'foo', 'id': 'bar'}\")"
+            ),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
