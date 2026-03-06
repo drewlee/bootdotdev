@@ -40,24 +40,27 @@ def split_nodes_util(old_nodes, extract_fn, token_str, text_type):
     new_nodes = []
 
     for node in old_nodes:
-        matches = extract_fn(node.text)
-        curr_text = node.text
+        if node.text_type != TextType.TEXT:
+            new_nodes.append(node)
+        else:
+            matches = extract_fn(node.text)
+            curr_text = node.text
 
-        for match in matches:
-            token = token_str.format(text=match[0], url=match[1])
-            index = curr_text.find(token)
+            for match in matches:
+                token = token_str.format(text=match[0], url=match[1])
+                index = curr_text.find(token)
 
-            if index > 0:
-                new_text_node = TextNode(curr_text[:index], TextType.TEXT)
+                if index > 0:
+                    new_text_node = TextNode(curr_text[:index], TextType.TEXT)
+                    new_nodes.append(new_text_node)
+
+                new_img_node = TextNode(match[0], text_type, match[1])
+                new_nodes.append(new_img_node)
+                curr_text = curr_text[index + len(token) :]
+
+            if len(curr_text):
+                new_text_node = TextNode(curr_text, TextType.TEXT)
                 new_nodes.append(new_text_node)
-
-            new_img_node = TextNode(match[0], text_type, match[1])
-            new_nodes.append(new_img_node)
-            curr_text = curr_text[index + len(token) :]
-
-        if len(curr_text):
-            new_text_node = TextNode(curr_text, TextType.TEXT)
-            new_nodes.append(new_text_node)
 
     return new_nodes
 
@@ -72,3 +75,16 @@ def split_nodes_link(old_nodes):
     return split_nodes_util(
         old_nodes, extract_markdown_links, "[{text}]({url})", TextType.LINK
     )
+
+
+def text_to_textnodes(text):
+    text_node = TextNode(text, TextType.TEXT)
+    new_nodes = [text_node]
+
+    new_nodes = split_nodes_delimiter(new_nodes, "**", TextType.BOLD)
+    new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
+    new_nodes = split_nodes_delimiter(new_nodes, "`", TextType.CODE)
+    new_nodes = split_nodes_image(new_nodes)
+    new_nodes = split_nodes_link(new_nodes)
+
+    return new_nodes

@@ -12,6 +12,7 @@
         "leafnode",
         "morelorem",
         "textnode",
+        "textnodes",
         "venv"
     ]
 }
