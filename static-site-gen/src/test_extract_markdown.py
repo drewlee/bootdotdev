@@ -1,5 +1,9 @@
 import unittest
-from extract_markdown import extract_markdown_images, extract_markdown_links
+from extract_markdown import (
+    extract_markdown_images,
+    extract_markdown_links,
+    markdown_to_blocks,
+)
 
 
 class TestExtractMarkdown(unittest.TestCase):
@@ -52,6 +56,46 @@ class TestExtractMarkdown(unittest.TestCase):
     def test_extract_markdown_links_none(self):
         matches = extract_markdown_links("This is text with no links")
         self.assertListEqual([], matches)
+
+
+class TestMarkdownToBlocks(unittest.TestCase):
+    def test_markdown_to_blocks(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertListEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                (
+                    "This is another paragraph with _italic_ text and `code` here\n"
+                    "This is the same paragraph on a new line"
+                ),
+                "- This is a list\n- with items",
+            ],
+        )
+
+    def test_markdown_to_blocks_whitespace(self):
+        md = """
+    Foo
+
+        Bar
+
+Baz
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertListEqual(blocks, ["Foo", "Bar", "Baz"])
+
+    def test_markdown_to_blocks_empty(self):
+        blocks = markdown_to_blocks("")
+        self.assertListEqual(blocks, [])
 
 
 if __name__ == "__main__":
