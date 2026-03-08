@@ -18,25 +18,31 @@ def block_to_block_type(block):
     if re.fullmatch(r"^(`{3})\n(.|\n)+\n\1$", block):
         return BlockType.CODE
 
-    if re.match(r">\s?[^\s]", block):
-        return BlockType.QUOTE
-
     block_lines = block.split("\n")
 
-    is_valid_list = True
+    if re.match(r">\s?[^\s]", block):
+        is_valid = True
+        for line in block_lines:
+            if re.match(r">\s?", line) is None:
+                is_valid = False
+
+        if is_valid:
+            return BlockType.QUOTE
+
+    is_valid = True
     for line in block_lines:
         if re.match(r"-\s[^\s]", line) is None:
-            is_valid_list = False
+            is_valid = False
 
-    if is_valid_list:
+    if is_valid:
         return BlockType.UNORDERED_LIST
 
-    is_valid_list = True
+    is_valid = True
     for i, line in enumerate(block_lines, 1):
         if re.match(str(i) + r"\.\s[^\s]", line) is None:
-            is_valid_list = False
+            is_valid = False
 
-    if is_valid_list:
+    if is_valid:
         return BlockType.ORDERED_LIST
 
     return BlockType.PARAGRAPH

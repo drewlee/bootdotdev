@@ -78,7 +78,9 @@ the **same** even with inline stuff
 
     def test_blockquote(self):
         md = """
-> To be, or not to be, that is the question.
+> To be, or not to be, that is the question,
+> to be, or not to be, that is the question,
+> to be, or not to be, that is the question.
 """
         node = markdown_to_html_node(md)
         html = node.to_html()
@@ -87,7 +89,11 @@ the **same** even with inline stuff
             html,
             (
                 "<div>"
-                "<blockquote>To be, or not to be, that is the question.</blockquote>"
+                "<blockquote>"
+                "To be, or not to be, that is the question,\n"
+                "to be, or not to be, that is the question,\n"
+                "to be, or not to be, that is the question."
+                "</blockquote>"
                 "</div>"
             ),
         )
@@ -140,6 +146,37 @@ the **same** even with inline stuff
                 "<li>Item four</li>"
                 "<li>Item five</li>"
                 "</ol>"
+                "</div>"
+            ),
+        )
+
+    def test_mixed_content(self):
+        md = """
+# Star Wars Fan Club
+
+![George Lucas sitting](/images/lucas.png)
+
+## Blog posts
+
+- [Post one](/blog/one)
+- [Post two](/blog/two)
+- [Post three](/blog/three)
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+
+        self.assertEqual(
+            html,
+            (
+                "<div>"
+                "<h1>Star Wars Fan Club</h1>"
+                '<p><img src="/images/lucas.png" alt="George Lucas sitting" /></p>'
+                "<h2>Blog posts</h2>"
+                "<ul>"
+                '<li><a href="/blog/one">Post one</a></li>'
+                '<li><a href="/blog/two">Post two</a></li>'
+                '<li><a href="/blog/three">Post three</a></li>'
+                "</ul>"
                 "</div>"
             ),
         )

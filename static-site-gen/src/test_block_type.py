@@ -3,7 +3,7 @@ from block_type import BlockType, block_to_block_type
 
 
 class TestBlockToBlockType(unittest.TestCase):
-    def test_block_to_block_type_heading(self):
+    def test_heading(self):
         block = "# Heading 1"
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.HEADING, "Heading level 1")
@@ -28,7 +28,7 @@ class TestBlockToBlockType(unittest.TestCase):
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.HEADING, "Heading level 6")
 
-    def test_block_to_block_type_heading_invalid(self):
+    def test_heading_invalid(self):
         block = "#"
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.PARAGRAPH, "No text following hash")
@@ -45,7 +45,7 @@ class TestBlockToBlockType(unittest.TestCase):
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.PARAGRAPH, "Too much space after hash")
 
-    def test_block_to_block_type_code(self):
+    def test_code(self):
         block = """```
 console.log('Hello, world!');
 ```"""
@@ -84,7 +84,7 @@ function foo() {
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.CODE, "Embedded line breaks")
 
-    def test_block_to_block_type_code_invalid(self):
+    def test_code_invalid(self):
         block = "```console.log('Hello, world!');```"
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.PARAGRAPH, "Single line")
@@ -136,7 +136,7 @@ console.log('Hello, world!');
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.PARAGRAPH, "Too many ticks in closing")
 
-    def test_block_to_block_type_quote(self):
+    def test_quote(self):
         block = ">This quote text is a classic"
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.QUOTE, "No space following symbol")
@@ -146,9 +146,8 @@ console.log('Hello, world!');
         self.assertEqual(block_type, BlockType.QUOTE, "One space following symbol")
 
         block = """> This quote text
-is from many classic
-literature sources.
-"""
+> is from many classic
+> literature sources."""
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.QUOTE, "Multiline")
 
@@ -164,6 +163,12 @@ literature sources.
         block = ">  This is quote text"
         block_type = block_to_block_type(block)
         self.assertEqual(block_type, BlockType.PARAGRAPH, "Too much space")
+
+        block = """> This quote text
+is from many classic
+literature sources."""
+        block_type = block_to_block_type(block)
+        self.assertEqual(block_type, BlockType.PARAGRAPH, "Invalid multiline")
 
     def test_block_to_block_type_unordered_list(self):
         block = """- First item

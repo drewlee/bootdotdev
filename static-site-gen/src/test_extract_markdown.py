@@ -3,6 +3,7 @@ from extract_markdown import (
     extract_markdown_images,
     extract_markdown_links,
     markdown_to_blocks,
+    extract_title,
 )
 
 
@@ -96,6 +97,42 @@ Baz
     def test_markdown_to_blocks_empty(self):
         blocks = markdown_to_blocks("")
         self.assertListEqual(blocks, [])
+
+
+class TestExtractTitle(unittest.TestCase):
+    def test_extract_title(self):
+        md = """
+What an amazing document.
+
+# This is the primary title.
+
+What an amazing paragraph.
+
+## Secondary title.
+
+- One
+- Two
+- Three
+"""
+        title = extract_title(md)
+        self.assertEqual(title, "This is the primary title.")
+
+    def test_extract_title_error(self):
+        md = """
+What an amazing document.
+
+## This is a secondary title.
+
+What an amazing paragraph.
+
+### Tertiary title.
+
+- One
+- Two
+- Three
+"""
+        with self.assertRaises(ValueError):
+            extract_title(md)
 
 
 if __name__ == "__main__":

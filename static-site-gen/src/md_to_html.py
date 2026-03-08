@@ -47,7 +47,10 @@ def strip_heading_markdown(text):
 
 
 def strip_quote_markdown(text):
-    return re.sub(r"^>\s?", "", text)
+    pattern = r"^>\s?"
+    lines = text.split("\n")
+    lines = list(map(lambda x: re.sub(pattern, "", x), lines))
+    return "\n".join(lines)
 
 
 def strip_code_markdown(text):
