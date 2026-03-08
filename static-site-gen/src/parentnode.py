@@ -3,14 +3,14 @@ from htmlnode import HTMLNode
 
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
-        super().__init__(tag=tag, children=children, props=props)
+        super().__init__(tag, None, children, props)
 
     def to_html(self):
         if not self.tag:
-            raise ValueError('"ParentNode" must have a value')
+            raise ValueError('"ParentNode" must have a tag')
 
         if not self.children:
-            raise ValueError('"ParentNode" must have children')
+            raise ValueError('"ParentNode" must have one or more children')
 
         out = f"<{self.tag}>"
         for node in self.children:
