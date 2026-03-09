@@ -25,19 +25,20 @@ def get_basepath():
     return out
 
 
-def get_abs_path(rel_path):
+def get_abs_path(rel_path, raise_error=True):
     curr_dir = path.dirname(path.abspath(__file__))
     target_path = path.normpath(path.join(curr_dir, REL_PROJECT_ROOT, rel_path))
 
-    if not path.exists(target_path):
+    if raise_error and not path.exists(target_path):
         raise FileNotFoundError(f'"{target_path}" is not a valid path')
 
     return target_path
 
 
 def rm_dir(target_dir):
-    print(f'Removing dir at "{target_dir}"\n')
-    shutil.rmtree(target_dir)
+    if path.exists(target_dir):
+        print(f'Removing dir at "{target_dir}"\n')
+        shutil.rmtree(target_dir)
 
 
 def copy_dir_contents(source, destination):
@@ -111,7 +112,7 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
 def main():
     basepath = get_basepath()
 
-    public_dir = get_abs_path(PUBLIC_DIR)
+    public_dir = get_abs_path(PUBLIC_DIR, False)
     rm_dir(public_dir)
 
     static_dir = get_abs_path(STATIC_DIR)
