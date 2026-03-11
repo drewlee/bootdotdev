@@ -1,6 +1,6 @@
 # Asteroids
 
-Python based clone of the Asteroids game. Completed as part of the
+Python based clone of the Asteroids game. Built as part of the
 [Build Asteroids using Python and Pygame](https://www.boot.dev/courses/build-asteroids-python) Boot.dev course.
 
 ## Usage

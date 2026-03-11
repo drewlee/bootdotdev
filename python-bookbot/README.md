@@ -1,6 +1,6 @@
 # BookBot
 
-Python CLI application for text file analysis. Completed as part of the
+Python CLI application for text file analysis. Built as part of the
 [Build a Bookbot in Python](https://www.boot.dev/courses/build-bookbot-python) Boot.dev
 course.
 

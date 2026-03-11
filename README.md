@@ -16,7 +16,7 @@ Python CLI application using the Google Gemini API.
 Static site generator. Transforms markdown documents to HTML pages.
 
 ## GitHub Pages
-Related static content deployed to https://drewlee.github.io/bootdotdev
+Related static content deployed to https://drewlee.github.io/bootdotdev.
 
 ## Profile
 https://www.boot.dev/u/merrytank80

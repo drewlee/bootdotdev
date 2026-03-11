@@ -1,6 +1,6 @@
 # AI Agent
 
-LLM-based Python CLI application using the Google Gemini API. Completed as part of the
+LLM-based Python CLI application using the Google Gemini API. Built as part of the
 [Build an AI Agent in Python](https://www.boot.dev/courses/build-ai-agent-python)
 Boot.dev course.
 
