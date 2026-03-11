@@ -1,6 +1,6 @@
 # BootDotDev
 
-Collection of projects completed as part of the [Boot.dev](https://boot.dev) training
+Collection of projects completed as part of the [Boot.dev](https://boot.dev) learning
 platform.
 
 ## Project List
