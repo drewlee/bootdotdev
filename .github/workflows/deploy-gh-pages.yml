@@ -37,13 +37,13 @@ jobs:
       - name: Build Pages
         run: cd static-site-gen && ./build.sh
       - name: Rename & Move Build Files
-        run: mv static-site-gen/public static-site-gen/static-site-gen && mkdir static-site-gen/public && mv static-site-gen/static-site-gen static-site-gen/public/
+        run: ./gh-pages.sh
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'static-site-gen/public'
+          path: 'dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
