@@ -4,6 +4,7 @@ Python based clone of the Asteroids game. Completed as part of the
 [Build Asteroids using Python and Pygame](https://www.boot.dev/courses/build-asteroids-python) Boot.dev course.
 
 ## Usage
+
 Create virtual environment.
 ```sh
 $ uv sync
