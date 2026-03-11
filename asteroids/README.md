@@ -1,16 +1,20 @@
-# Asteroids Game
+# Asteroids
 
-Create virtual environment:
-```bash
-uv sync
+Python based clone of the Asteroids game. Completed as part of the
+[Build Asteroids using Python and Pygame](https://www.boot.dev/courses/build-asteroids-python) Boot.dev course.
+
+## Usage
+Create virtual environment.
+```sh
+$ uv sync
 ```
 
-Activate the virtual environment:
-```bash
-source .venv/bin/activate
+Activate the virtual environment.
+```sh
+$ source .venv/bin/activate
 ```
 
-Run the game:
-```bash
-uv run main.py
+Run game.
+```sh
+$ uv run main.py
 ```
