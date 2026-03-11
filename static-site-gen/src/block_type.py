@@ -23,6 +23,7 @@ def block_to_block_type(block):
     if re.match(r">\s?[^\s]", block):
         is_valid = True
         for line in block_lines:
+            # Subsequent lines can be empty as long as they start with `>`
             if re.match(r">\s?", line) is None:
                 is_valid = False
 

@@ -1,18 +1,38 @@
 import re
 from extract_markdown import markdown_to_blocks
 from block_type import BlockType, block_to_block_type
-from textnode import TextNode, TextType
-from parentnode import ParentNode
+from text_node import TextNode, TextType
+from parent_node import ParentNode
 from text_to_html import text_node_to_html_node
-from split_nodes import text_to_textnodes
+from split_nodes import text_to_text_nodes
 
 
 def get_heading_tag(text):
+    """
+    Determines and returns the HTML heading tag name from the provided markdown string.
+
+    For example, given `### Chapter 23`, `h3` is returned.
+
+    Args:
+        text (str): Markdown string.
+
+    Returns:
+        str: HTML heading tag name, e.g., `h3`.
+    """
     matches = re.findall(r"^#{1,6}", text)
     return f"h{len(matches[0])}"
 
 
 def get_ul_item_nodes(text):
+    """
+    Returns a list of HTML unordered list item nodes from the provided markdown string.
+
+    Args:
+        text (str): Markdown string.
+
+    Returns:
+        list: List of HTML nodes representing an unordered list of items.
+    """
     html_nodes = []
     lines = text.split("\n")
 
@@ -26,6 +46,15 @@ def get_ul_item_nodes(text):
 
 
 def get_ol_item_nodes(text):
+    """
+    Returns a list of HTML ordered list item nodes from the provided markdown string.
+
+    Args:
+        text (str): Markdown string.
+
+    Returns:
+        list: List of HTML nodes representing an ordered list of items.
+    """
     html_nodes = []
     lines = text.split("\n")
 
@@ -39,14 +68,41 @@ def get_ol_item_nodes(text):
 
 
 def strip_new_lines(text):
+    """
+    Replaces new lines with spaces in the provided string.
+
+    Arguments:
+        text (str): Markdown string.
+
+    Returns:
+        str: Modified string.
+    """
     return " ".join(text.split("\n"))
 
 
 def strip_heading_markdown(text):
+    """
+    Removes heading markdown characters from the provided string.
+
+    Arguments:
+        text (str): Markdown string.
+
+    Returns:
+        str: Modified string.
+    """
     return re.sub(r"^#{1,6}\s", "", text)
 
 
 def strip_quote_markdown(text):
+    """
+    Removes blockquote markdown characters from the provided string.
+
+    Arguments:
+        text (str): Markdown string.
+
+    Returns:
+        str: Modified string.
+    """
     pattern = r"^>\s?"
     lines = text.split("\n")
     lines = list(map(lambda x: re.sub(pattern, "", x), lines))
@@ -54,6 +110,15 @@ def strip_quote_markdown(text):
 
 
 def strip_code_markdown(text):
+    """
+    Removes code block markdown characters from the provided string.
+
+    Arguments:
+        text (str): Markdown string.
+
+    Returns:
+        str: Modified string.
+    """
     lines = text.split("\n")
     lines = lines[1:]
     lines[-1] = ""
@@ -61,8 +126,17 @@ def strip_code_markdown(text):
 
 
 def text_to_children(text):
+    """
+    Transforms the provided string into a list of HTML leaf nodes.
+
+    Arguments:
+        text (str): Markdown string.
+
+    Returns:
+        list: List of HTML leaf nodes.
+    """
     html_nodes = []
-    text_nodes = text_to_textnodes(text)
+    text_nodes = text_to_text_nodes(text)
 
     for text_node in text_nodes:
         html_node = text_node_to_html_node(text_node)
@@ -72,6 +146,15 @@ def text_to_children(text):
 
 
 def markdown_to_html_node(markdown):
+    """
+    Processes and transforms the raw markdown string to a tree of HTML nodes.
+
+    Args:
+        markdown (str): Raw markdown string to process.
+
+    Returns:
+        ParentNode: Tree of HTML nodes with `div` element as the root.
+    """
     parent_div_node = ParentNode("div", [])
     blocks = markdown_to_blocks(markdown)
 

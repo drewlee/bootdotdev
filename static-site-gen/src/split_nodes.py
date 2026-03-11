@@ -1,4 +1,4 @@
-from textnode import TextType, TextNode
+from text_node import TextType, TextNode
 from extract_markdown import extract_markdown_images, extract_markdown_links
 
 
@@ -77,7 +77,7 @@ def split_nodes_link(old_nodes):
     )
 
 
-def text_to_textnodes(text):
+def text_to_text_nodes(text):
     text_node = TextNode(text, TextType.TEXT)
     new_nodes = [text_node]
 

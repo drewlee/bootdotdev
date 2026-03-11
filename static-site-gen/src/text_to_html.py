@@ -1,8 +1,20 @@
-from textnode import TextType
-from leafnode import LeafNode
+from text_node import TextType
+from leaf_node import LeafNode
 
 
 def text_node_to_html_node(text_node):
+    """
+    Constructs an HTML LeafNode from the specified text node.
+
+    Args:
+        text_node (TextNode): Text node to use as the basis for the new HTML node.
+
+    Returns:
+        LeafNode: HTML leaf node.
+
+    Raises:
+        ValueError: Invalid TextType for the given text node.
+    """
     match text_node.text_type:
         case TextType.TEXT:
             return LeafNode(None, text_node.text)

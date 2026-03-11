@@ -4,9 +4,9 @@ from split_nodes import (
     split_nodes_delimiter,
     split_nodes_image,
     split_nodes_link,
-    text_to_textnodes,
+    text_to_text_nodes,
 )
-from textnode import TextType, TextNode
+from text_node import TextType, TextNode
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
@@ -283,7 +283,7 @@ class TestTextToTextnodes(unittest.TestCase):
             "![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a "
             "[link](https://boot.dev)"
         )
-        new_nodes = text_to_textnodes(text)
+        new_nodes = text_to_text_nodes(text)
 
         self.assertListEqual(
             [
@@ -305,7 +305,7 @@ class TestTextToTextnodes(unittest.TestCase):
 
     def test_text_to_textnodes_text_only(self):
         text = "This is some exemplary text."
-        new_nodes = text_to_textnodes(text)
+        new_nodes = text_to_text_nodes(text)
 
         self.assertListEqual([TextNode(text, TextType.TEXT)], new_nodes)
 
