@@ -8,8 +8,8 @@ from split_nodes import text_to_text_nodes
 
 
 def get_heading_tag(text):
-    """
-    Determines and returns the HTML heading tag name from the provided markdown string.
+    """Determines and returns the HTML heading tag name from the provided
+    markdown string.
 
     For example, given `### Chapter 23`, `h3` is returned.
 
@@ -24,8 +24,8 @@ def get_heading_tag(text):
 
 
 def get_ul_item_nodes(text):
-    """
-    Returns a list of HTML unordered list item nodes from the provided markdown string.
+    """Returns a list of HTML unordered list item nodes from the provided
+    markdown string.
 
     Args:
         text (str): Markdown string.
@@ -46,8 +46,7 @@ def get_ul_item_nodes(text):
 
 
 def get_ol_item_nodes(text):
-    """
-    Returns a list of HTML ordered list item nodes from the provided markdown string.
+    """Returns a list of HTML ordered list item nodes from the provided markdown string.
 
     Args:
         text (str): Markdown string.
@@ -68,8 +67,7 @@ def get_ol_item_nodes(text):
 
 
 def strip_new_lines(text):
-    """
-    Replaces new lines with spaces in the provided string.
+    """Replaces new lines with spaces in the provided string.
 
     Arguments:
         text (str): Markdown string.
@@ -81,8 +79,7 @@ def strip_new_lines(text):
 
 
 def strip_heading_markdown(text):
-    """
-    Removes heading markdown characters from the provided string.
+    """Removes heading markdown characters from the provided string.
 
     Arguments:
         text (str): Markdown string.
@@ -94,8 +91,7 @@ def strip_heading_markdown(text):
 
 
 def strip_quote_markdown(text):
-    """
-    Removes blockquote markdown characters from the provided string.
+    """Removes blockquote markdown characters from the provided string.
 
     Arguments:
         text (str): Markdown string.
@@ -110,8 +106,7 @@ def strip_quote_markdown(text):
 
 
 def strip_code_markdown(text):
-    """
-    Removes code block markdown characters from the provided string.
+    """Removes code block markdown characters from the provided string.
 
     Arguments:
         text (str): Markdown string.
@@ -126,8 +121,7 @@ def strip_code_markdown(text):
 
 
 def text_to_children(text):
-    """
-    Transforms the provided string into a list of HTML leaf nodes.
+    """Transforms the provided string into a list of HTML leaf nodes.
 
     Arguments:
         text (str): Markdown string.
@@ -146,8 +140,7 @@ def text_to_children(text):
 
 
 def markdown_to_html_node(markdown):
-    """
-    Processes and transforms the raw markdown string to a tree of HTML nodes.
+    """Processes and transforms the raw markdown string to a tree of HTML nodes.
 
     Args:
         markdown (str): Raw markdown string to process.

@@ -12,6 +12,14 @@ class BlockType(Enum):
 
 
 def block_to_block_type(block):
+    """Determines the `BlockType` of the provided markdown block string.
+
+    Args:
+        block (str): A single markdown block.
+
+    Returns:
+        BlockType: The type of markdown block.
+    """
     if re.match(r"#{1,6}\s[^\s]", block):
         return BlockType.HEADING
 
@@ -46,4 +54,5 @@ def block_to_block_type(block):
     if is_valid:
         return BlockType.ORDERED_LIST
 
+    # Default to paragraph as fallback
     return BlockType.PARAGRAPH

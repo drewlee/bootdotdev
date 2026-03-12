@@ -15,6 +15,11 @@ DEFAULT_BASEPATH = "/"
 
 
 def get_basepath():
+    """Returns the base path from CLI arguments, falling back to the default.
+
+    Returns:
+        str: The base path to use for generating the site.
+    """
     basepath = ""
     if len(sys.argv) > 1:
         basepath = sys.argv[1].strip()
@@ -26,6 +31,18 @@ def get_basepath():
 
 
 def get_abs_path(rel_path, raise_error=True):
+    """Resolves a path relative to the project root into an absolute path.
+
+    Args:
+        rel_path (str): Path relative to the project root.
+        raise_error (bool): Whether to raise an error if the path does not exist.
+
+    Returns:
+        str: Absolute path.
+
+    Raises:
+        FileNotFoundError: If the resolved path does not exist.
+    """
     curr_dir = path.dirname(path.abspath(__file__))
     target_path = path.normpath(path.join(curr_dir, REL_PROJECT_ROOT, rel_path))
 
@@ -36,12 +53,25 @@ def get_abs_path(rel_path, raise_error=True):
 
 
 def rm_dir(target_dir):
+    """Removes a directory and all its contents if it exists.
+
+    Args:
+        target_dir (str): Path to the directory to remove.
+    """
     if path.exists(target_dir):
         print(f'Removing dir at "{target_dir}"\n')
         shutil.rmtree(target_dir)
 
 
 def copy_dir_contents(source, destination):
+    """Recursively copies the contents of a source directory to a destination directory.
+
+    Skips hidden files and directories (those starting with `.`).
+
+    Args:
+        source (str): Path to the source directory.
+        destination (str): Path to the destination directory.
+    """
     if not path.exists(destination):
         os.mkdir(destination)
 
@@ -62,6 +92,17 @@ def copy_dir_contents(source, destination):
 
 
 def generate_page(from_path, template_path, dest_path, basepath):
+    """Generates an HTML page from a markdown file and an HTML template.
+
+    Reads the markdown file, converts it to HTML, injects it into the template,
+    and writes the result to the destination path.
+
+    Args:
+        from_path (str): Path to the source markdown file.
+        template_path (str): Path to the HTML template file.
+        dest_path (str): Path where the generated HTML file will be written.
+        basepath (str): Base path used to rewrite asset and href URLs in the template.
+    """
     with open(from_path, encoding="utf-8") as file:
         markdown = file.read()
 
@@ -93,6 +134,14 @@ def generate_page(from_path, template_path, dest_path, basepath):
 
 
 def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
+    """Recursively generates HTML pages for all markdown files in a content directory.
+
+    Args:
+        dir_path_content (str): Path to the directory containing markdown content.
+        template_path (str): Path to the HTML template file.
+        dest_dir_path (str): Path to the output directory for generated HTML files.
+        basepath (str): Base path used to rewrite asset and href URLs in the template.
+    """
     file_list = os.listdir(dir_path_content)
     if not file_list:
         print(f'No files found at "{dir_path_content}"\n')
@@ -110,6 +159,9 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
 
 
 def main():
+    """Entry point: cleans the public directory, copies static assets,
+    and generates all pages.
+    """
     basepath = get_basepath()
 
     public_dir = get_abs_path(PUBLIC_DIR, False)

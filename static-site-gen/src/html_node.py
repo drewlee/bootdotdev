@@ -9,8 +9,7 @@ class HTMLNode:
     """
 
     def __init__(self, tag=None, value=None, children=None, props=None):
-        """
-        Initializes an instance.
+        """Initializes an instance.
 
         Args:
             tag (str): HTML tag name.
@@ -24,8 +23,7 @@ class HTMLNode:
         self.props = props
 
     def to_html(self):
-        """
-        Abstract method to be implemented by the sub-class.
+        """Abstract method to be implemented by the sub-class.
 
         Raises:
             NotImplementedError: If the method isn't implemented by the sub-class.
@@ -33,8 +31,7 @@ class HTMLNode:
         raise NotImplementedError('"to_html" method not implemented by sub-class')
 
     def props_to_html(self):
-        """
-        Transforms the props dict into a string of HTML element attributes.
+        """Transforms the props dict into a string of HTML element attributes.
 
         Returns:
             str: HTML element attributes.
@@ -49,8 +46,7 @@ class HTMLNode:
         return out
 
     def __repr__(self):
-        """
-        String representation of the instance for debugging purposes.
+        """String representation of the instance for debugging purposes.
 
         Returns:
             str: Formatted to output all property values.

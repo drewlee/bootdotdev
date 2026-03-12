@@ -11,8 +11,7 @@ class LeafNode(HTMLNode):
     """
 
     def __init__(self, tag, value, props=None):
-        """
-        Initializes an instance.
+        """Initializes an instance.
 
         Args:
             tag (str): HTML tag name.
@@ -22,8 +21,7 @@ class LeafNode(HTMLNode):
         super().__init__(tag, value, None, props)
 
     def to_html(self):
-        """
-        Transforms the instance into an HTML string.
+        """Transforms the instance into an HTML string.
 
         Returns:
             str: String representation of the HTML element.
@@ -45,8 +43,7 @@ class LeafNode(HTMLNode):
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
 
     def __repr__(self):
-        """
-        String representation of the instance for debugging purposes.
+        """String representation of the instance for debugging purposes.
 
         Returns:
             str: Formatted to output all property values.
