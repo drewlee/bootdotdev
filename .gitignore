@@ -6,7 +6,9 @@ __pycache__
 webflyx
 asteroids/game_state.jsonl
 asteroids/game_events.jsonl
+repl.log
 static-site-gen/public/
 dist/
 heifer/
 ts-proj/
+node_modules/

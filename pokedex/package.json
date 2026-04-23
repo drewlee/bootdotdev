@@ -1,0 +1,20 @@
+{
+  "name": "pokedex",
+  "version": "1.0.0",
+  "description": "Boot.dev Pokedex project",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npm run build && npm run start",
+    "start": "node dist/main.js",
+    "test": "vitest --run"
+  },
+  "keywords": [],
+  "author": "Andrew A. Lee",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
+  }
+}
