@@ -10,7 +10,7 @@ export function cleanInput(input: string): string[] {
 export function startREPL(state: State): void {
   const { commands, rl } = state;
 
-  rl.on('line', (input) => {
+  rl.on('line', async (input) => {
     const parts = cleanInput(input);
 
     if (!parts.length) {
@@ -19,7 +19,7 @@ export function startREPL(state: State): void {
     }
 
     if (parts[0] in commands) {
-      commands[parts[0]].callback(state);
+      await commands[parts[0]].callback(state);
     } else {
       console.log('Unknown command');
     }
