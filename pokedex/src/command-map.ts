@@ -5,13 +5,13 @@ export async function commandMap(state: State): Promise<void> {
 
   if (nextLocationsURL === null) {
     console.log(
-      'No more locations to display. Use the `mapb` command to view the previous page of locations.'
+      'No more locations to display. Use the `mapb` command to view the previous page of locations.',
     );
     return;
   }
 
   const data = await pokeAPI.fetchLocations(nextLocationsURL);
-  if (data === null) {
+  if (!data) {
     console.log('Unable to display locations. Please try again later.');
     return;
   }
@@ -33,13 +33,13 @@ export async function commandMapB(state: State): Promise<void> {
 
   if (prevLocationsURL === null) {
     console.log(
-      'No previous locations to display. Use the `map` command to view the next page of locations.'
+      'No previous locations to display. Use the `map` command to view the next page of locations.',
     );
     return;
   }
 
   const data = await pokeAPI.fetchLocations(prevLocationsURL);
-  if (data === null) {
+  if (!data) {
     console.log('Unable to display locations. Please try again later.');
     return;
   }

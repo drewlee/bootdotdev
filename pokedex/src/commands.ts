@@ -17,13 +17,13 @@ export function getCommands(): Record<string, CLICommand> {
     },
     map: {
       name: 'map',
-      description: 'Displays the next list of location areas',
+      description: 'Displays the next page of location areas',
       callback: commandMap,
     },
     mapb: {
       name: 'mapb',
-      description: 'Displays the previous list of location areas',
+      description: 'Displays the previous page of location areas',
       callback: commandMapB,
-    }
+    },
   };
 }
