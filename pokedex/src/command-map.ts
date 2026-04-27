@@ -5,7 +5,7 @@ export async function commandMap(state: State): Promise<void> {
 
   if (nextLocationsURL === null) {
     console.log(
-      'No more locations to display. Use the `mapb` command to view the previous page of locations.',
+      'No more location area names to display. Use the `mapb` command to view the previous set of location area names.',
     );
     return;
   }
@@ -33,7 +33,7 @@ export async function commandMapB(state: State): Promise<void> {
 
   if (prevLocationsURL === null) {
     console.log(
-      'No previous locations to display. Use the `map` command to view the next page of locations.',
+      'No previous location area names to display. Use the `map` command to view the next set of location area names.',
     );
     return;
   }

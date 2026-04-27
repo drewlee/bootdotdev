@@ -11,15 +11,18 @@ export function startREPL(state: State): void {
   const { commands, rl } = state;
 
   rl.on('line', async (input) => {
-    const parts = cleanInput(input);
+    const args = cleanInput(input);
 
-    if (!parts.length) {
+    if (!args.length) {
       rl.prompt();
       return;
     }
 
-    if (parts[0] in commands) {
-      await commands[parts[0]].callback(state);
+    const command = args[0];
+
+    if (command in commands) {
+      const options = args.slice(1);
+      await commands[command].callback(state, ...options);
     } else {
       console.log('Unknown command');
     }
