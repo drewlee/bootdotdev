@@ -63,6 +63,12 @@ export type Location = {
   }[];
 };
 
+export type Pokemon = {
+  base_experience: number;
+  name: string;
+  id: number;
+};
+
 let cache = new Cache(30000);
 
 export class PokeAPI {
@@ -102,6 +108,25 @@ export class PokeAPI {
       cache.add(pageURL, data);
     } catch (error) {
       console.log(`Error: Failed fetching data for location area at ${pageURL}`);
+    }
+
+    return data;
+  }
+
+  async fetchPokemon(pokemonName: string): Promise<Pokemon | undefined> {
+    const pageURL = `${PokeAPI.baseURL}/pokemon/${pokemonName}/`;
+    let data: Pokemon | undefined = cache.get(pageURL);
+
+    if (data) {
+      return data;
+    }
+
+    try {
+      const response = await fetch(pageURL);
+      data = (await response.json()) as Pokemon;
+      cache.add(pageURL, data);
+    } catch (error) {
+      console.log(`Error: Failed fetching Pokemon data for ${pageURL}`);
     }
 
     return data;
