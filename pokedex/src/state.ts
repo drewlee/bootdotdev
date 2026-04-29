@@ -22,9 +22,9 @@ export type CLICommand = {
  *
  * @returns Application state object.
  */
-export function initState(): State {
+export function initState(cacheInterval: number): State {
   const commands = getCommands();
-  const pokeAPI = new PokeAPI();
+  const pokeAPI = new PokeAPI(cacheInterval);
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout,

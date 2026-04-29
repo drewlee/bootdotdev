@@ -86,15 +86,16 @@ export type Pokemon = {
   }[];
 };
 
-let cache = new Cache(30000);
-
 /**
  * Handles interactions with the Pokemon API.
  */
 export class PokeAPI {
   private static readonly baseURL = 'https://pokeapi.co/api/v2';
+  #cache: Cache;
 
-  constructor() {}
+  constructor(cacheInterval: number) {
+    this.#cache = new Cache(cacheInterval);
+  }
 
   /**
    * Fetches data of location area names.
@@ -103,7 +104,7 @@ export class PokeAPI {
    * @returns Data for location areas as a Promise.
    */
   async fetchLocations(pageURL: string): Promise<ShallowLocations | undefined> {
-    let data: ShallowLocations | undefined = cache.get(pageURL);
+    let data: ShallowLocations | undefined = this.#cache.get(pageURL);
 
     if (data) {
       return data;
@@ -112,7 +113,7 @@ export class PokeAPI {
     try {
       const response = await fetch(pageURL);
       data = (await response.json()) as ShallowLocations;
-      cache.add(pageURL, data);
+      this.#cache.add(pageURL, data);
     } catch (error) {
       console.log(`Error: Failed fetching data for location areas at ${pageURL}`);
     }
@@ -128,7 +129,7 @@ export class PokeAPI {
    */
   async fetchLocation(locationName: string): Promise<Location | undefined> {
     const pageURL = `${PokeAPI.baseURL}/location-area/${locationName}/`;
-    let data: Location | undefined = cache.get(pageURL);
+    let data: Location | undefined = this.#cache.get(pageURL);
 
     if (data) {
       return data;
@@ -137,7 +138,7 @@ export class PokeAPI {
     try {
       const response = await fetch(pageURL);
       data = (await response.json()) as Location;
-      cache.add(pageURL, data);
+      this.#cache.add(pageURL, data);
     } catch (error) {
       console.log(`Error: Failed fetching data for location area at ${pageURL}`);
     }
@@ -153,7 +154,7 @@ export class PokeAPI {
    */
   async fetchPokemon(pokemonName: string): Promise<Pokemon | undefined> {
     const pageURL = `${PokeAPI.baseURL}/pokemon/${pokemonName}/`;
-    let data: Pokemon | undefined = cache.get(pageURL);
+    let data: Pokemon | undefined = this.#cache.get(pageURL);
 
     if (data) {
       return data;
@@ -162,7 +163,7 @@ export class PokeAPI {
     try {
       const response = await fetch(pageURL);
       data = (await response.json()) as Pokemon;
-      cache.add(pageURL, data);
+      this.#cache.add(pageURL, data);
     } catch (error) {
       console.log(`Error: Failed fetching Pokemon data for ${pageURL}`);
     }
