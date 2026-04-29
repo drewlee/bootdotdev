@@ -1,5 +1,12 @@
 import { type State } from './state.js';
 
+/**
+ * Command for catching a Pokemon.
+ *
+ * @param state - Application state object.
+ * @param pokemonName - Pokemon to catch.
+ * @returns Promise.
+ */
 export async function commandCatch(state: State, pokemonName: string): Promise<void> {
   if (!pokemonName) {
     console.log('Please provide a Pokemon name');

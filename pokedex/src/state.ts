@@ -17,6 +17,11 @@ export type CLICommand = {
   callback: (state: State, ...args: string[]) => Promise<void>;
 };
 
+/**
+ * Initializes and returns the application state object.
+ *
+ * @returns Application state object.
+ */
 export function initState(): State {
   const commands = getCommands();
   const pokeAPI = new PokeAPI();

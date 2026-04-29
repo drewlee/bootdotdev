@@ -1,5 +1,12 @@
 import { type State } from './state.js';
 
+/**
+ * Command to inspect the specified Pokemon.
+ *
+ * @param state - Application state object.
+ * @param pokemonName - Pokemon to inspect.
+ * @returns Promise.
+ */
 export async function commandInspect(state: State, pokemonName: string): Promise<void> {
   if (!pokemonName) {
     console.log('Please provide a Pokemon name');

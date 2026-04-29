@@ -1,5 +1,11 @@
 import { type State } from './state.js';
 
+/**
+ * Command to display application help information.
+ *
+ * @param state - Application state object.
+ * @returns Promise.
+ */
 export async function commandHelp(state: State): Promise<void> {
   console.log('Welcome to the Pokedex!\nUsage:\n');
 

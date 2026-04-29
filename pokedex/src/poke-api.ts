@@ -88,11 +88,20 @@ export type Pokemon = {
 
 let cache = new Cache(30000);
 
+/**
+ * Handles interactions with the Pokemon API.
+ */
 export class PokeAPI {
   private static readonly baseURL = 'https://pokeapi.co/api/v2';
 
   constructor() {}
 
+  /**
+   * Fetches data of location area names.
+   *
+   * @param pageURL - URL for the fetch request.
+   * @returns Data for location areas as a Promise.
+   */
   async fetchLocations(pageURL: string): Promise<ShallowLocations | undefined> {
     let data: ShallowLocations | undefined = cache.get(pageURL);
 
@@ -111,6 +120,12 @@ export class PokeAPI {
     return data;
   }
 
+  /**
+   * Fetches data associated with a location area.
+   *
+   * @param locationName - Location area to get data for.
+   * @returns Location area data as a Promise.
+   */
   async fetchLocation(locationName: string): Promise<Location | undefined> {
     const pageURL = `${PokeAPI.baseURL}/location-area/${locationName}/`;
     let data: Location | undefined = cache.get(pageURL);
@@ -130,6 +145,12 @@ export class PokeAPI {
     return data;
   }
 
+  /**
+   * Fetches data for the specified Pokemon.
+   *
+   * @param pokemonName - Pokemon name.
+   * @returns Pokemon data as a promise.
+   */
   async fetchPokemon(pokemonName: string): Promise<Pokemon | undefined> {
     const pageURL = `${PokeAPI.baseURL}/pokemon/${pokemonName}/`;
     let data: Pokemon | undefined = cache.get(pageURL);

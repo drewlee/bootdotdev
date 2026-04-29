@@ -5,9 +5,10 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc",
+    "clean": "rm -rf dist",
     "dev": "npm run build && npm run start",
-    "start": "node dist/main.js",
     "prettier": "prettier -w .",
+    "start": "node dist/main.js",
     "test": "vitest --run"
   },
   "keywords": [],

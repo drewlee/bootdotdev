@@ -1,5 +1,12 @@
 import { type State } from './state.js';
 
+/**
+ * Command for exploring a location area.
+ *
+ * @param state - Application state.
+ * @param locationName - Location area to explore.
+ * @returns Promise.
+ */
 export async function commandExplore(
   state: State,
   locationName: string,

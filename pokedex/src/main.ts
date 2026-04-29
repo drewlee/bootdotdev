@@ -1,7 +1,10 @@
 import { initState } from './state.js';
 import { startREPL } from './repl.js';
 
-function main() {
+/**
+ * Application entry point.
+ */
+function main(): void {
   const state = initState();
   startREPL(state);
 }

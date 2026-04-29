@@ -1,5 +1,11 @@
 import { type State } from './state.js';
 
+/**
+ * Command to display the next set of location areas.
+ *
+ * @param state - Application state object.
+ * @returns Promise.
+ */
 export async function commandMap(state: State): Promise<void> {
   const { nextLocationsURL, pokeAPI } = state;
 
@@ -28,6 +34,12 @@ export async function commandMap(state: State): Promise<void> {
   console.log(locations.join('\n'));
 }
 
+/**
+ * Command to display the previous set of location areas.
+ *
+ * @param state - Application state object.
+ * @returns Promise.
+ */
 export async function commandMapB(state: State): Promise<void> {
   const { pokeAPI, prevLocationsURL } = state;
 

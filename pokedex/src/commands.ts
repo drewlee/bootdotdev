@@ -7,6 +7,11 @@ import { commandInspect } from './command-inspect.js';
 import { commandPokedex } from './command-pokedex.js';
 import { type CLICommand } from './state.js';
 
+/**
+ * Returns an object of supported application commands.
+ *
+ * @returns Application commands object.
+ */
 export function getCommands(): Record<string, CLICommand> {
   return {
     exit: {
