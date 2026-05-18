@@ -111,7 +111,28 @@ class TestGetWordsForNum(unittest.TestCase):
             self.assertEqual(result, value)
 
     def test_various_values(self):
-        pass
+        expected = {
+            1_100: "one thousand one hundred",
+            1_234: "one thousand two hundred thirty-four",
+            5_000: "five thousand",
+            11_011: "eleven thousand eleven",
+            25_100: "twenty-five thousand one hundred",
+            42_678: "forty-two thousand six hundred seventy-eight",
+            99_999: "ninety-nine thousand nine hundred ninety-nine",
+            100_500: "one hundred thousand five hundred",
+            300_050: "three hundred thousand fifty",
+            1_000_001: "one million one",
+            2_500_000: "two million five hundred thousand",
+            7_654_321: "seven million six hundred fifty-four thousand three hundred twenty-one",
+            15_000_000: "fifteen million",
+            50_000_100: "fifty million one hundred",
+            87_654_321: "eighty-seven million six hundred fifty-four thousand three hundred twenty-one",
+            99_000_000: "ninety-nine million",
+        }
+
+        for key, value in expected.items():
+            result = get_words_for_num(key)
+            self.assertEqual(result, value)
 
     def test_upper_bound(self):
         value = 999_999_999_999_999
