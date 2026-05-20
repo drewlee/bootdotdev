@@ -1,5 +1,4 @@
 import unittest
-
 from words import get_words_for_num
 
 
@@ -123,10 +122,16 @@ class TestGetWordsForNum(unittest.TestCase):
             300_050: "three hundred thousand fifty",
             1_000_001: "one million one",
             2_500_000: "two million five hundred thousand",
-            7_654_321: "seven million six hundred fifty-four thousand three hundred twenty-one",
+            7_654_321: (
+                "seven million six hundred fifty-four thousand "
+                "three hundred twenty-one"
+            ),
             15_000_000: "fifteen million",
             50_000_100: "fifty million one hundred",
-            87_654_321: "eighty-seven million six hundred fifty-four thousand three hundred twenty-one",
+            87_654_321: (
+                "eighty-seven million six hundred fifty-four "
+                "thousand three hundred twenty-one"
+            ),
             99_000_000: "ninety-nine million",
         }
 
