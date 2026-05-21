@@ -31,8 +31,8 @@ def is_numeric(input_arg: str) -> bool:
     if len(input_arg.split(" ")) > 1:
         return False
 
-    input_arg = re.sub(r",|\.", "", input_arg)
-    is_match = re.fullmatch(r"^\d+$", input_arg)
+    input_arg = re.sub(r"[,.]", "", input_arg)
+    is_match = re.fullmatch(r"\d+", input_arg)
 
     return is_match is not None
 
@@ -47,7 +47,7 @@ def get_clean_input(input_arg: str) -> str:
     Returns:
         str: Formatted user input.
     """
-    clean = re.sub(r",|\.", "", input_arg.strip().lower())
+    clean = re.sub(r"[,.]", "", input_arg.strip().lower())
     clean_list = filter(lambda x: x not in ("", "and"), clean.split(" "))
     output = " ".join(list(clean_list))
 
