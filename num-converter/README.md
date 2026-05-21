@@ -3,7 +3,7 @@
 Python based CLI application to convert a number to its English text equivalent.
 Can also run the reverse operation to convert a numeric text representation to a number.
 Built as a
-[personal project](https://www.boot.dev/lessons/b34b0f83-0af0-4bad-9e8d-65ebcd8d7cbc)
+[personal project](https://www.boot.dev/courses/build-personal-project-1)
 for Boot.dev.
 
 ## Usage
