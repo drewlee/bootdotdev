@@ -1,4 +1,4 @@
-# Number to Word Converter
+# Number to Text Converter
 
 Python based CLI application to convert a number to its English text equivalent.
 Can also run the reverse operation to convert a numeric text representation to a number.

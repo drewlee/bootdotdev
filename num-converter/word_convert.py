@@ -38,14 +38,14 @@ place_convert = {
 
 def get_num_for_words(words_input):
     """
-    Converts the number given in English words to a numeric value.
+    Converts the given number written in English text to a numeric value.
     E.g., returns `99` when given `ninety-nine`.
 
     Args:
-        words (str): Word equivalent of a number to convert.
+        words (str): Text representation of a number to convert.
 
     Returns:
-        int: Numeric value for the given word equivalent of a number.
+        int: Numeric equivalent of the given text number representation.
     """
     words = words_input.split(" ")
     num = 0

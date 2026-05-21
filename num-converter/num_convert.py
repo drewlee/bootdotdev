@@ -39,14 +39,14 @@ place_convert = {
 
 def get_words_for_num(num):
     """
-    Converts the given numeric value into its English word equivalent.
+    Converts the given numeric value into its English text equivalent.
     E.g., returns `ninety-nine` when given `99`.
 
     Args:
         num (int): Numeric value to convert.
 
     Returns:
-        str: English word representation of the given numeric value.
+        str: English text representation of the given numeric value.
     """
     words = []
 

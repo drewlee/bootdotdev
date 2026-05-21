@@ -56,7 +56,7 @@ def get_clean_input(input_arg):
 
 def is_valid_word_input(input_arg):
     """
-    Determines whether the provided number written in English words is valid.
+    Determines whether the provided number written in text is valid.
 
     Args:
         input_arg (str): Input value to test.
