@@ -1,38 +1,56 @@
 import sys
-from words import get_words_for_num
-
-
-def format_num_str(num_str):
-    return num_str.replace(",", "")
-
-
-def get_int(num_str):
-    try:
-        num_int = int(num_str)
-        return num_int
-    except ValueError:
-        return None
+from num_convert import get_words_for_num
+from word_convert import get_num_for_words
+from utils import get_clean_input, get_int, is_numeric, is_valid_word_input
 
 
 def main():
+    """
+    Application entry point.
+    """
+    # Handle missing arg
     if len(sys.argv) < 2:
-        print("Usage: python main.py <number>")
+        msg = (
+            "Usage: python3 -m main <numeric_value>\n"
+            "- Supported values include positive whole numbers under one quadrillion"
+        )
+        print(msg)
         sys.exit(1)
 
-    input_num_str = sys.argv[1]
-    num_str = format_num_str(input_num_str)
-    num_int = get_int(num_str)
+    input_str = sys.argv[1]
+    clean_input = get_clean_input(input_str)
 
-    if num_int is None:
-        print(f"Error: Input '{input_num_str}' is not a valid integer")
-        sys.exit(1)
+    # Determine whether the input is numeric
+    if is_numeric(clean_input):
+        # Exit on decimal values
+        if "." in input_str:
+            print("Error: Input must be a whole number")
+            sys.exit(1)
 
-    if num_int < 0:
-        print(f"Error: Input '{input_num_str}' can not be a negative value")
-        sys.exit(1)
+        num_int = get_int(clean_input)
 
-    output = get_words_for_num(num_int)
-    print(output)
+        # Exit on invalid int
+        if num_int is None:
+            print(f"Error: Input '{input_str}' is not a valid integer")
+            sys.exit(1)
+
+        # Exit on negative numbers
+        if num_int < 0:
+            print(f"Error: Input '{input_str}' can not be a negative value")
+            sys.exit(1)
+
+        output = get_words_for_num(num_int)
+        print(output)
+    else:
+        invalid_str = is_valid_word_input(clean_input)
+
+        # Exit on non-numeric token
+        if invalid_str is not None:
+            print(f"Error: Input '{invalid_str}' is not a valid numeric value")
+            sys.exit(1)
+
+        output = get_num_for_words(clean_input)
+        print(output)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 import unittest
-from nums import get_num_for_words
+from word_convert import get_num_for_words
 
 
 class TestGetNumsForWords(unittest.TestCase):
@@ -18,7 +18,7 @@ class TestGetNumsForWords(unittest.TestCase):
         ]
 
         for i, value in enumerate(values):
-            result = get_num_for_words([value])
+            result = get_num_for_words(value)
             self.assertEqual(result, i)
 
     def test_teens(self):
@@ -36,7 +36,7 @@ class TestGetNumsForWords(unittest.TestCase):
         ]
 
         for i in range(10, len(values) + 10):
-            result = get_num_for_words([values[i - 10]])
+            result = get_num_for_words(values[i - 10])
             self.assertEqual(result, i)
 
     def test_whole_tens(self):
@@ -52,7 +52,7 @@ class TestGetNumsForWords(unittest.TestCase):
         }
 
         for key, value in values.items():
-            result = get_num_for_words([key])
+            result = get_num_for_words(key)
             self.assertEqual(result, value)
 
     def test_tens_range(self):
@@ -69,7 +69,7 @@ class TestGetNumsForWords(unittest.TestCase):
         }
 
         for key, value in values.items():
-            result = get_num_for_words([key])
+            result = get_num_for_words(key)
             self.assertEqual(result, value)
 
     def test_whole_hundreds(self):
@@ -86,7 +86,7 @@ class TestGetNumsForWords(unittest.TestCase):
         ]
 
         for i, value in enumerate(values):
-            result = get_num_for_words(value.split(" "))
+            result = get_num_for_words(value)
             self.assertEqual(result, (i + 1) * 100)
 
     def test_whole_thousands_plus(self):
@@ -106,7 +106,7 @@ class TestGetNumsForWords(unittest.TestCase):
         }
 
         for key, value in values.items():
-            result = get_num_for_words(key.split(" "))
+            result = get_num_for_words(key)
             self.assertEqual(result, value)
 
     def test_various_values(self):
@@ -122,17 +122,21 @@ class TestGetNumsForWords(unittest.TestCase):
             "three hundred thousand fifty": 300_050,
             "one million one": 1_000_001,
             "two million five hundred thousand": 2_500_000,
-            "seven million six hundred fifty-four thousand three hundred\
-                twenty-one": 7_654_321,
+            (
+                "seven million six hundred fifty-four thousand "
+                "three hundred twenty-one"
+            ): 7_654_321,
             "fifteen million": 15_000_000,
             "fifty million one hundred": 50_000_100,
-            "eighty-seven million six hundred fifty-four thousand three hundred\
-                twenty-one": 87_654_321,
+            (
+                "eighty-seven million six hundred fifty-four thousand "
+                "three hundred twenty-one"
+            ): 87_654_321,
             "ninety-nine million": 99_000_000,
         }
 
         for key, value in values.items():
-            result = get_num_for_words(key.split(" "))
+            result = get_num_for_words(key)
             self.assertEqual(result, value)
 
     def test_upper_bounds(self):
@@ -144,28 +148,43 @@ class TestGetNumsForWords(unittest.TestCase):
             "nine million nine hundred ninety-nine thousand nine hundred ninety-nine": (
                 9_999_999
             ),
-            "ninety-nine million nine hundred ninety-nine thousand nine hundred\
-                ninety-nine": 99_999_999,
-            "nine hundred ninety-nine million nine hundred ninety-nine thousand nine\
-                hundred ninety-nine": 999_999_999,
-            "nine billion nine hundred ninety-nine million nine hundred ninety-nine\
-                thousand nine hundred ninety-nine": 9_999_999_999,
-            "ninety-nine billion nine hundred ninety-nine million nine hundred\
-                ninety-nine thousand nine hundred ninety-nine": 99_999_999_999,
-            "nine hundred ninety-nine billion nine hundred ninety-nine million nine\
-                hundred ninety-nine thousand nine hundred ninety-nine": 999_999_999_999,
-            "nine trillion nine hundred ninety-nine billion nine hundred ninety-nine\
-                million nine hundred ninety-nine thousand nine hundred ninety-nine": (
-                9_999_999_999_999
-            ),
-            "ninety-nine trillion nine hundred ninety-nine billion nine hundred\
-                ninety-nine million nine hundred ninety-nine thousand nine hundred\
-                    ninety-nine": (99_999_999_999_999),
-            "nine hundred ninety-nine trillion nine hundred ninety-nine billion nine\
-                hundred ninety-nine million nine hundred ninety-nine thousand nine\
-                    hundred ninety-nine": (999_999_999_999_999),
+            (
+                "ninety-nine million nine hundred ninety-nine thousand "
+                "nine hundred ninety-nine"
+            ): 99_999_999,
+            (
+                "nine hundred ninety-nine million nine hundred ninety-nine thousand "
+                "nine hundred ninety-nine"
+            ): 999_999_999,
+            (
+                "nine billion nine hundred ninety-nine million nine hundred "
+                "ninety-nine thousand nine hundred ninety-nine"
+            ): 9_999_999_999,
+            (
+                "ninety-nine billion nine hundred ninety-nine million nine hundred "
+                "ninety-nine thousand nine hundred ninety-nine"
+            ): 99_999_999_999,
+            (
+                "nine hundred ninety-nine billion nine hundred ninety-nine million "
+                "nine hundred ninety-nine thousand nine hundred ninety-nine"
+            ): 999_999_999_999,
+            (
+                "nine trillion nine hundred ninety-nine billion nine hundred "
+                "ninety-nine million nine hundred ninety-nine thousand nine "
+                "hundred ninety-nine"
+            ): 9_999_999_999_999,
+            (
+                "ninety-nine trillion nine hundred ninety-nine billion "
+                "nine hundred ninety-nine million nine hundred ninety-nine "
+                "thousand nine hundred ninety-nine"
+            ): 99_999_999_999_999,
+            (
+                "nine hundred ninety-nine trillion nine hundred ninety-nine billion "
+                "nine hundred ninety-nine million nine hundred ninety-nine thousand "
+                "nine hundred ninety-nine"
+            ): 999_999_999_999_999,
         }
 
         for key, value in values.items():
-            result = get_num_for_words(key.split(" "))
+            result = get_num_for_words(key)
             self.assertEqual(result, value)
