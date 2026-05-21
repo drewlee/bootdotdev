@@ -42,7 +42,7 @@ def get_num_for_words(words_input):
     E.g., returns `99` when given `ninety-nine`.
 
     Args:
-        words (list(str)): Word equivalent of a number to convert.
+        words (str): Word equivalent of a number to convert.
 
     Returns:
         int: Numeric value for the given word equivalent of a number.
