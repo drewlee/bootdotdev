@@ -48,7 +48,7 @@ def get_clean_input(input_arg: str) -> str:
         str: Formatted user input.
     """
     clean = re.sub(r"[,.]", "", input_arg.strip().lower())
-    clean_list = filter(lambda x: x not in ("", "and"), clean.split(" "))
+    clean_list = filter(lambda x: x != "and", clean.split())
     output = " ".join(list(clean_list))
 
     return output
