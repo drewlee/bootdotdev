@@ -2,7 +2,7 @@ import re
 from word_convert import word_convert, place_convert
 
 
-def get_int(num_str):
+def get_int(num_str: str) -> int | None:
     """
     Converts the given numeric str to int.
 
@@ -18,7 +18,7 @@ def get_int(num_str):
         return None
 
 
-def is_numeric(input_arg):
+def is_numeric(input_arg: str) -> bool:
     """
     Determines whether the provided input is numeric.
 
@@ -37,7 +37,7 @@ def is_numeric(input_arg):
     return is_match is not None
 
 
-def get_clean_input(input_arg):
+def get_clean_input(input_arg: str) -> str:
     """
     Formats and normalizes the provided user input.
 
@@ -54,7 +54,7 @@ def get_clean_input(input_arg):
     return output
 
 
-def is_valid_word_input(input_arg):
+def is_valid_word_input(input_arg: str) -> str | None:
     """
     Determines whether the provided number written in text is valid.
 

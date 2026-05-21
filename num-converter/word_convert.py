@@ -36,13 +36,13 @@ place_convert = {
 }
 
 
-def get_num_for_words(words_input):
+def get_num_for_words(words_input: str) -> int:
     """
     Converts the given number written in English text to a numeric value.
     E.g., returns `99` when given `ninety-nine`.
 
     Args:
-        words (str): Text representation of a number to convert.
+        words_input (str): Text representation of a number to convert.
 
     Returns:
         int: Numeric equivalent of the given text number representation.

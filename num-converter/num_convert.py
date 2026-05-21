@@ -37,7 +37,7 @@ place_convert = {
 }
 
 
-def get_words_for_num(num):
+def get_words_for_num(num: int) -> str:
     """
     Converts the given numeric value into its English text equivalent.
     E.g., returns `ninety-nine` when given `99`.
