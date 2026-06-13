@@ -5,7 +5,10 @@ import {
 } from './commands/commands.js';
 import { handlerLogin } from './commands/login.js';
 
-function main() {
+/**
+ * Main application entry point.
+ */
+function main(): void {
   const args = process.argv.slice(2);
 
   if (!args.length) {
