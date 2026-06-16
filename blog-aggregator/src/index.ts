@@ -4,11 +4,12 @@ import {
   runCommand,
 } from './commands/commands.js';
 import { handlerLogin } from './commands/login.js';
+import { handlerRegister } from './commands/register.js';
 
 /**
  * Main application entry point.
  */
-function main(): void {
+async function main(): Promise<void> {
   const args = process.argv.slice(2);
 
   if (!args.length) {
@@ -21,9 +22,10 @@ function main(): void {
   const commandsRegistry: CommandsRegistry = {};
 
   registerCommand(commandsRegistry, 'login', handlerLogin);
+  registerCommand(commandsRegistry, 'register', handlerRegister);
 
   try {
-    runCommand(commandsRegistry, cmdName, ...cmdArgs);
+    await runCommand(commandsRegistry, cmdName, ...cmdArgs);
   } catch (error) {
     if (error instanceof Error) {
       console.error(`Error running command ${cmdName}: ${error.message}`);
@@ -33,6 +35,8 @@ function main(): void {
 
     process.exit(1);
   }
+
+  process.exit(0);
 }
 
 main();
