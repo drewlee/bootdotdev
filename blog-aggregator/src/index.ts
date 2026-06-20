@@ -7,6 +7,7 @@ import { handlerLogin } from './commands/login.js';
 import { handlerRegister } from './commands/register.js';
 import { handlerReset } from './commands/reset.js';
 import { handlerUsers } from './commands/users.js';
+import { handlerAgg } from './commands/agg.js';
 
 /**
  * Main application entry point.
@@ -27,6 +28,7 @@ async function main(): Promise<void> {
   registerCommand(commandsRegistry, 'register', handlerRegister);
   registerCommand(commandsRegistry, 'reset', handlerReset);
   registerCommand(commandsRegistry, 'users', handlerUsers);
+  registerCommand(commandsRegistry, 'agg', handlerAgg);
 
   try {
     await runCommand(commandsRegistry, cmdName, ...cmdArgs);
