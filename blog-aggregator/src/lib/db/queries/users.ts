@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { db } from '../index.js';
 import { users } from '../schema.js';
 
@@ -16,6 +16,6 @@ export async function getUsers() {
   return await db.select().from(users);
 }
 
-export async function truncateUsers() {
-  await db.execute(sql`TRUNCATE users`);
+export async function deleteUsers() {
+  await db.delete(users);
 }

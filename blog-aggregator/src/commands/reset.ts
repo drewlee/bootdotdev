@@ -1,10 +1,10 @@
-import { truncateUsers, getUsers } from '../lib/db/queries/users.js';
+import { deleteUsers, getUsers } from '../lib/db/queries/users.js';
 
 export async function handlerReset(cmdName: string, ...args: string[]): Promise<void> {
   const msg = 'Unable to reset the database';
 
   try {
-    await truncateUsers();
+    await deleteUsers();
   } catch (error) {
     throw new Error(msg);
   }

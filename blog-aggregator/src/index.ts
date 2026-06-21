@@ -8,6 +8,7 @@ import { handlerRegister } from './commands/register.js';
 import { handlerReset } from './commands/reset.js';
 import { handlerUsers } from './commands/users.js';
 import { handlerAgg } from './commands/agg.js';
+import { handlerAddFeed } from './commands/addfeed.js';
 
 /**
  * Main application entry point.
@@ -29,6 +30,7 @@ async function main(): Promise<void> {
   registerCommand(commandsRegistry, 'reset', handlerReset);
   registerCommand(commandsRegistry, 'users', handlerUsers);
   registerCommand(commandsRegistry, 'agg', handlerAgg);
+  registerCommand(commandsRegistry, 'addfeed', handlerAddFeed);
 
   try {
     await runCommand(commandsRegistry, cmdName, ...cmdArgs);
