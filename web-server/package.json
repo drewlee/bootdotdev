@@ -1,0 +1,16 @@
+{
+  "name": "web-server",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Andrew A. Lee",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "volta": {
+    "node": "24.14.1",
+    "npm": "11.17.0"
+  }
+}
