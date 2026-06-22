@@ -1,5 +1,5 @@
 import { readConfig } from '../config.js';
-import { createFeed } from '../lib/db/queries/feeds.js';
+import { createFeed, getFeeds } from '../lib/db/queries/feeds.js';
 import { getUser } from '../lib/db/queries/users.js';
 import type { Feed, User } from '../lib/db/schema.js';
 
@@ -24,7 +24,7 @@ export async function handlerAddFeed(
   const user = await getUser(config.currentUserName);
 
   if (!user) {
-    throw new Error(`User ${config.currentUserName} no found`);
+    throw new Error(`User ${config.currentUserName} not found`);
   }
 
   const [name, url] = args;
@@ -40,5 +40,21 @@ export async function handlerAddFeed(
     printFeed(feed, user);
   } catch (error) {
     throw error;
+  }
+}
+
+export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<void> {
+  const records = await getFeeds();
+
+  if (!records) {
+    console.log('No feeds found');
+    return;
+  }
+
+  console.log(`Found ${records.length} feeds:\n`);
+
+  for (const { feeds, users } of records) {
+    printFeed(feeds, users);
+    console.log('\n');
   }
 }
