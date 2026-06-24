@@ -1,6 +1,7 @@
 import { readConfig } from '../config.js';
 import { createFeed, getFeeds } from '../lib/db/queries/feeds.js';
 import { getUser } from '../lib/db/queries/users.js';
+import { createFeedFollow } from '../lib/db/queries/feed-follows.js';
 import type { Feed, User } from '../lib/db/schema.js';
 
 function printFeed(feed: Feed, user: User) {
@@ -28,19 +29,17 @@ export async function handlerAddFeed(
   }
 
   const [name, url] = args;
+  const feed = await createFeed(name, url, user.id);
 
-  try {
-    const feed = await createFeed(name, url, user.id);
-
-    if (!feed) {
-      throw new Error(`Failed to create feed: ${name}`);
-    }
-
-    console.log('Feed created successfully:');
-    printFeed(feed, user);
-  } catch (error) {
-    throw error;
+  if (!feed) {
+    console.log(`Failed to create feed: ${name}`);
+    return;
   }
+
+  await createFeedFollow(user.id, feed.id);
+
+  console.log('Feed created successfully:');
+  printFeed(feed, user);
 }
 
 export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<void> {
