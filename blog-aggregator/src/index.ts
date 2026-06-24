@@ -3,10 +3,12 @@ import {
   registerCommand,
   runCommand,
 } from './commands/commands.js';
-import { handlerLogin } from './commands/login.js';
-import { handlerRegister } from './commands/register.js';
-import { handlerReset } from './commands/reset.js';
-import { handlerUsers } from './commands/users.js';
+import {
+  handlerLogin,
+  handlerRegister,
+  handlerReset,
+  handlerUsers,
+} from './commands/users.js';
 import { handlerAgg } from './commands/agg.js';
 import { handlerAddFeed, handlerFeeds } from './commands/feeds.js';
 
