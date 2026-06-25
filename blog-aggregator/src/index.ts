@@ -3,6 +3,7 @@ import {
   registerCommand,
   runCommand,
 } from './commands/commands.js';
+import { middlewareLoggedIn } from './commands/middleware.js';
 import {
   handlerLogin,
   handlerRegister,
@@ -33,10 +34,10 @@ async function main(): Promise<void> {
   registerCommand(commandsRegistry, 'reset', handlerReset);
   registerCommand(commandsRegistry, 'users', handlerUsers);
   registerCommand(commandsRegistry, 'agg', handlerAgg);
-  registerCommand(commandsRegistry, 'addfeed', handlerAddFeed);
+  registerCommand(commandsRegistry, 'addfeed', middlewareLoggedIn(handlerAddFeed));
   registerCommand(commandsRegistry, 'feeds', handlerFeeds);
-  registerCommand(commandsRegistry, 'follow', handlerFollow);
-  registerCommand(commandsRegistry, 'following', handlerFollowing);
+  registerCommand(commandsRegistry, 'follow', middlewareLoggedIn(handlerFollow));
+  registerCommand(commandsRegistry, 'following', middlewareLoggedIn(handlerFollowing));
 
   try {
     await runCommand(commandsRegistry, cmdName, ...cmdArgs);
