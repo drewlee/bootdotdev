@@ -14,6 +14,10 @@ Python based clone of the Asteroids game.
 Python CLI application using the Google Gemini API.
 5. [Static Site Generator](https://github.com/drewlee/bootdotdev/tree/main/static-site-gen) -
 Static site generator. Transforms markdown documents to HTML pages.
+6. [Pokedex](https://github.com/drewlee/bootdotdev/tree/main/pokedex) - TypeScript CLI
+application for interacting with the Pokemon web API.
+7. [Number to Text Converter](https://github.com/drewlee/bootdotdev/tree/main/num-converter) -
+Python CLI application to convert a number to its English text equivalent, and vice versa. 
 
 ## GitHub Pages
 Related static content deployed to https://drewlee.github.io/bootdotdev.
