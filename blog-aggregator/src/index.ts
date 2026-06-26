@@ -12,7 +12,11 @@ import {
 } from './commands/users.js';
 import { handlerAgg } from './commands/agg.js';
 import { handlerAddFeed, handlerFeeds } from './commands/feeds.js';
-import { handlerFollow, handlerFollowing } from './commands/feed-follows.js';
+import {
+  handlerFollow,
+  handlerFollowing,
+  handlerUnfollow,
+} from './commands/feed-follows.js';
 
 /**
  * Main application entry point.
@@ -38,6 +42,7 @@ async function main(): Promise<void> {
   registerCommand(commandsRegistry, 'feeds', handlerFeeds);
   registerCommand(commandsRegistry, 'follow', middlewareLoggedIn(handlerFollow));
   registerCommand(commandsRegistry, 'following', middlewareLoggedIn(handlerFollowing));
+  registerCommand(commandsRegistry, 'unfollow', middlewareLoggedIn(handlerUnfollow));
 
   try {
     await runCommand(commandsRegistry, cmdName, ...cmdArgs);
