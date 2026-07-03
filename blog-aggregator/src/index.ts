@@ -37,7 +37,7 @@ async function main(): Promise<void> {
   registerCommand(commandsRegistry, 'register', handlerRegister);
   registerCommand(commandsRegistry, 'reset', handlerReset);
   registerCommand(commandsRegistry, 'users', handlerUsers);
-  registerCommand(commandsRegistry, 'agg', handlerAgg);
+  registerCommand(commandsRegistry, 'agg', middlewareLoggedIn(handlerAgg));
   registerCommand(commandsRegistry, 'addfeed', middlewareLoggedIn(handlerAddFeed));
   registerCommand(commandsRegistry, 'feeds', handlerFeeds);
   registerCommand(commandsRegistry, 'follow', middlewareLoggedIn(handlerFollow));

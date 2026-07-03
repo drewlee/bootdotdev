@@ -15,3 +15,15 @@ export async function getFeedByUrl(url: string) {
   const [result] = await db.select().from(feeds).where(eq(feeds.url, url));
   return result;
 }
+
+export async function markFeedFetched(feedId: string) {
+  const [result] = await db
+    .update(feeds)
+    .set({
+      lastFetchedAt: new Date(),
+    })
+    .where(eq(feeds.id, feedId))
+    .returning();
+
+  return result;
+}

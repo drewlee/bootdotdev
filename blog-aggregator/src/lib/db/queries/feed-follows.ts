@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { db } from '../index.js';
 import { feedFollows, feeds, users } from '../schema.js';
 
@@ -53,4 +53,20 @@ export async function deleteFeedFollow(userId: string, feedId: string) {
     .returning();
 
   return result;
+}
+
+export async function getNextFeedToFetch(userId: string) {
+  const results = await db
+    .select({
+      id: feeds.id,
+      name: feeds.name,
+      url: feeds.url,
+    })
+    .from(feedFollows)
+    .innerJoin(feeds, eq(feedFollows.feedId, feeds.id))
+    .where(eq(feedFollows.userId, userId))
+    .orderBy(sql`${feeds.lastFetchedAt} ASC NULLS FIRST`)
+    .limit(1);
+
+  return results[0];
 }
