@@ -17,6 +17,7 @@ import {
   handlerFollowing,
   handlerUnfollow,
 } from './commands/feed-follows.js';
+import { handlerBrowse } from './commands/browse.js';
 
 /**
  * Main application entry point.
@@ -37,12 +38,13 @@ async function main(): Promise<void> {
   registerCommand(commandsRegistry, 'register', handlerRegister);
   registerCommand(commandsRegistry, 'reset', handlerReset);
   registerCommand(commandsRegistry, 'users', handlerUsers);
-  registerCommand(commandsRegistry, 'agg', middlewareLoggedIn(handlerAgg));
+  registerCommand(commandsRegistry, 'agg', handlerAgg);
   registerCommand(commandsRegistry, 'addfeed', middlewareLoggedIn(handlerAddFeed));
   registerCommand(commandsRegistry, 'feeds', handlerFeeds);
   registerCommand(commandsRegistry, 'follow', middlewareLoggedIn(handlerFollow));
   registerCommand(commandsRegistry, 'following', middlewareLoggedIn(handlerFollowing));
   registerCommand(commandsRegistry, 'unfollow', middlewareLoggedIn(handlerUnfollow));
+  registerCommand(commandsRegistry, 'browse', middlewareLoggedIn(handlerBrowse));
 
   try {
     await runCommand(commandsRegistry, cmdName, ...cmdArgs);

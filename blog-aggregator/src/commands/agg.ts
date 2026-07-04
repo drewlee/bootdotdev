@@ -1,7 +1,6 @@
-import { type User } from '../lib/db/schema.js';
-import { getNextFeedToFetch } from '../lib/db/queries/feed-follows.js';
 import { fetchFeed } from '../lib/rss/fetch.js';
-import { markFeedFetched } from '../lib/db/queries/feeds.js';
+import { getNextFeedToFetch, markFeedFetched } from '../lib/db/queries/feeds.js';
+import { createPost } from '../lib/db/queries/posts.js';
 
 function parseDuration(durationStr: string): number | undefined {
   const regex = /^(\d+)(ms|s|m|h)$/;
@@ -32,8 +31,8 @@ function handleError(err: unknown): void {
   console.error(`Error scraping feeds: ${err instanceof Error ? err.message : err}`);
 }
 
-async function scrapeFeeds(userId: string): Promise<void> {
-  const feed = await getNextFeedToFetch(userId);
+async function scrapeFeeds(): Promise<void> {
+  const feed = await getNextFeedToFetch();
   if (!feed) {
     console.log('No feeds to fetch');
     return;
@@ -43,7 +42,16 @@ async function scrapeFeeds(userId: string): Promise<void> {
   await markFeedFetched(feed.id);
 
   for (const item of feedData.channel.item) {
-    console.log(item.title);
+    const errMsg = `Unable to save post: ${item.title}`;
+
+    try {
+      const result = createPost(item, feed.id);
+      if (!result) {
+        console.log(errMsg);
+      }
+    } catch (error) {
+      console.error(errMsg);
+    }
   }
 
   console.log(
@@ -51,11 +59,7 @@ async function scrapeFeeds(userId: string): Promise<void> {
   );
 }
 
-export async function handlerAgg(
-  cmdName: string,
-  user: User,
-  ...args: string[]
-): Promise<void> {
+export async function handlerAgg(cmdName: string, ...args: string[]): Promise<void> {
   if (args.length !== 1) {
     throw new Error(`usage: ${cmdName} <time_between_reqs>`);
   }
@@ -71,10 +75,10 @@ export async function handlerAgg(
 
   console.log(`Collecting feeds every ${duration}...`);
 
-  scrapeFeeds(user.id).catch(handleError);
+  scrapeFeeds().catch(handleError);
 
   const intervalId = setInterval(() => {
-    scrapeFeeds(user.id).catch(handleError);
+    scrapeFeeds().catch(handleError);
   }, parsedDuration);
 
   await new Promise<void>((resolve) => {
