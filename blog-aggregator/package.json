@@ -1,14 +1,13 @@
 {
-  "name": "blog-aggregator",
+  "name": "gator",
   "version": "1.0.0",
-  "description": "TypeScript blog aggregator",
+  "description": "TypeScript CLI blog aggregator",
   "author": "Andrew A. Lee",
   "type": "module",
   "scripts": {
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
-    "start": "tsx ./src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsx ./src/index.ts"
   },
   "devDependencies": {
     "@types/node": "^25.9.2",

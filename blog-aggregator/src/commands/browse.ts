@@ -10,7 +10,7 @@ export async function handlerBrowse(cmdName: string, user: User, ...args: string
     if (!Number.isNaN(parsedLimit)) {
       limit = parsedLimit;
     } else {
-      throw new Error(`Invalid limit value - usage: ${cmdName} <limit_number>`);
+      throw new Error(`Invalid limit value - usage: ${cmdName} [<limit_number>]`);
     }
   }
 

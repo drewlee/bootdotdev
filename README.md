@@ -18,6 +18,8 @@ Static site generator. Transforms markdown documents to HTML pages.
 application for interacting with the Pokemon web API.
 7. [Number to Text Converter](https://github.com/drewlee/bootdotdev/tree/main/num-converter) -
 Python CLI application to convert a number to its English text equivalent, and vice versa. 
+8. [Gator](https://github.com/drewlee/bootdotdev/tree/main/blog-aggregator) - TypeScript CLI
+application for aggregating and browsing RSS feeds.
 
 ## GitHub Pages
 Related static content deployed to https://drewlee.github.io/bootdotdev.
