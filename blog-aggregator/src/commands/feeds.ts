@@ -2,6 +2,12 @@ import { createFeed, getFeeds } from '../lib/db/queries/feeds.js';
 import { createFeedFollow } from '../lib/db/queries/feed-follows.js';
 import type { Feed, User } from '../lib/db/schema.js';
 
+/**
+ * Prints the details of a feed and its owning user to the console.
+ *
+ * @param feed - Feed to print.
+ * @param user - User that owns the feed.
+ */
 function printFeed(feed: Feed, user: User) {
   console.log(`* ID:            ${feed.id}`);
   console.log(`* Created:       ${feed.createdAt}`);
@@ -11,6 +17,13 @@ function printFeed(feed: Feed, user: User) {
   console.log(`* User:          ${user.name}`);
 }
 
+/**
+ * Creates a new feed owned by the user and follows it automatically.
+ *
+ * @param cmdName - Command name.
+ * @param user - Currently logged in user.
+ * @param args - Command arguments; the feed name and URL.
+ */
 export async function handlerAddFeed(
   cmdName: string,
   user: User,
@@ -34,6 +47,9 @@ export async function handlerAddFeed(
   printFeed(feed, user);
 }
 
+/**
+ * Lists all feeds in the database along with their owning users.
+ */
 export async function handlerFeeds(): Promise<void> {
   const records = await getFeeds();
 

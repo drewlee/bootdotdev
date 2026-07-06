@@ -6,6 +6,13 @@ import {
 } from '../lib/db/queries/feed-follows.js';
 import type { User } from '../lib/db/schema.js';
 
+/**
+ * Follows the feed at the given URL on behalf of the user.
+ *
+ * @param cmdName - Command name.
+ * @param user - Currently logged in user.
+ * @param args - Command arguments; the feed URL to follow.
+ */
 export async function handlerFollow(cmdName: string, user: User, ...args: string[]) {
   if (args.length !== 1) {
     throw new Error(`usage: ${cmdName} <feed_url>`);
@@ -22,6 +29,12 @@ export async function handlerFollow(cmdName: string, user: User, ...args: string
   console.log(`User ${feedFollow.userName} is now following "${feedFollow.feedName}"`);
 }
 
+/**
+ * Lists the feeds the user is currently following.
+ *
+ * @param _ - Command name (unused).
+ * @param user - Currently logged in user.
+ */
 export async function handlerFollowing(_: string, user: User) {
   const feedFollows = await getFeedFollowsForUser(user.id);
 
@@ -39,6 +52,13 @@ export async function handlerFollowing(_: string, user: User) {
   console.log(out);
 }
 
+/**
+ * Unfollows the feed at the given URL on behalf of the user.
+ *
+ * @param cmdName - Command name.
+ * @param user - Currently logged in user.
+ * @param args - Command arguments; the feed URL to unfollow.
+ */
 export async function handlerUnfollow(cmdName: string, user: User, ...args: string[]) {
   if (args.length !== 1) {
     throw new Error(`usage: ${cmdName} <feed_url>`);

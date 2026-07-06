@@ -9,6 +9,11 @@ type Config = {
   currentUserName: string;
 };
 
+/**
+ * Builds the absolute path to the config file in the user's home directory.
+ *
+ * @returns The config file path.
+ */
 function getConfigFilePath(): string {
   const homeDir = os.homedir();
   const configPath = path.join(homeDir, CONFIG_NAME);
@@ -16,6 +21,12 @@ function getConfigFilePath(): string {
   return configPath;
 }
 
+/**
+ * Converts a snake_case string to camelCase.
+ *
+ * @param value - snake_case string to convert.
+ * @returns The camelCase string.
+ */
 function toCamelCase(value: string): string {
   let result = '';
 
@@ -32,6 +43,12 @@ function toCamelCase(value: string): string {
   return result;
 }
 
+/**
+ * Converts a camelCase string to snake_case.
+ *
+ * @param value - camelCase string to convert.
+ * @returns The snake_case string.
+ */
 function toSnakeCase(value: string): string {
   let result = '';
 
@@ -43,6 +60,12 @@ function toSnakeCase(value: string): string {
   return result;
 }
 
+/**
+ * Validates the raw config object and converts its keys to camelCase.
+ *
+ * @param rawConfig - Parsed config object with snake_case keys.
+ * @returns The validated config with camelCase keys.
+ */
 function validateConfig(rawConfig: any): Config {
   if (!rawConfig.db_url || typeof rawConfig.db_url !== 'string') {
     throw new Error('db_url is required in config file');
@@ -61,6 +84,11 @@ function validateConfig(rawConfig: any): Config {
   return config as Config;
 }
 
+/**
+ * Writes the config to disk, converting its keys back to snake_case.
+ *
+ * @param config - Config to persist.
+ */
 function writeConfig(config: Config): void {
   const configPath = getConfigFilePath();
   const rawConfig: Record<string, string> = {};
@@ -73,6 +101,11 @@ function writeConfig(config: Config): void {
   fs.writeFileSync(configPath, data, { encoding: 'utf8' });
 }
 
+/**
+ * Sets the current user name in the config and persists it to disk.
+ *
+ * @param user - User name to set as current.
+ */
 export function setUser(user: string): void {
   const config = readConfig();
   config.currentUserName = user;
@@ -80,6 +113,11 @@ export function setUser(user: string): void {
   writeConfig(config);
 }
 
+/**
+ * Reads and validates the config file from disk.
+ *
+ * @returns The validated config.
+ */
 export function readConfig(): Config {
   const configPath = getConfigFilePath();
 

@@ -3,6 +3,13 @@ import { feedFollows, feeds, posts, users } from '../schema.js';
 import { db } from '../index.js';
 import { type RSSItem } from '../../rss/fetch.js';
 
+/**
+ * Creates a post record from an RSS item belonging to the specified feed.
+ *
+ * @param post - RSS item to save.
+ * @param feedId - ID of the feed the post belongs to.
+ * @returns The newly created post record.
+ */
 export async function createPost(post: RSSItem, feedId: string) {
   const [result] = await db
     .insert(posts)
@@ -18,6 +25,13 @@ export async function createPost(post: RSSItem, feedId: string) {
   return result;
 }
 
+/**
+ * Retrieves the most recent posts from the feeds the specified user follows.
+ *
+ * @param userId - ID of the user.
+ * @param limit - Maximum number of posts to return.
+ * @returns The post records, ordered by most recently created first.
+ */
 export async function getPostsForUser(userId: string, limit: number) {
   const results = await db
     .select({

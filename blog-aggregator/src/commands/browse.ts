@@ -1,6 +1,13 @@
 import { type User } from '../lib/db/schema.js';
 import { getPostsForUser } from '../lib/db/queries/posts.js';
 
+/**
+ * Prints the most recent posts from the feeds the user follows.
+ *
+ * @param cmdName - Command name.
+ * @param user - Currently logged in user.
+ * @param args - Command arguments; an optional post limit (defaults to 2).
+ */
 export async function handlerBrowse(cmdName: string, user: User, ...args: string[]) {
   let limit = 2;
 

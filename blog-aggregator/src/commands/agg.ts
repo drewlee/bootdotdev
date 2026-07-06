@@ -2,6 +2,12 @@ import { fetchFeed } from '../lib/rss/fetch.js';
 import { getNextFeedToFetch, markFeedFetched } from '../lib/db/queries/feeds.js';
 import { createPost } from '../lib/db/queries/posts.js';
 
+/**
+ * Parses a duration string into a number of milliseconds.
+ *
+ * @param durationStr - Duration in the format 1h, 30m, 15s, or 3500ms.
+ * @returns The duration in milliseconds, or undefined if the format is invalid.
+ */
 function parseDuration(durationStr: string): number | undefined {
   const regex = /^(\d+)(ms|s|m|h)$/;
   const match = durationStr.match(regex);
@@ -27,10 +33,18 @@ function parseDuration(durationStr: string): number | undefined {
   }
 }
 
+/**
+ * Logs an error encountered while scraping feeds.
+ *
+ * @param err - Error thrown during feed scraping.
+ */
 function handleError(err: unknown): void {
   console.error(`Error scraping feeds: ${err instanceof Error ? err.message : err}`);
 }
 
+/**
+ * Fetches the next due feed, marks it as fetched, and saves its posts.
+ */
 async function scrapeFeeds(): Promise<void> {
   const feed = await getNextFeedToFetch();
   if (!feed) {
@@ -59,6 +73,13 @@ async function scrapeFeeds(): Promise<void> {
   );
 }
 
+/**
+ * Continuously scrapes feeds at the interval given by the command arguments
+ * until the process receives SIGINT.
+ *
+ * @param cmdName - Command name.
+ * @param args - Command arguments.
+ */
 export async function handlerAgg(cmdName: string, ...args: string[]): Promise<void> {
   if (args.length !== 1) {
     throw new Error(`usage: ${cmdName} <time_between_reqs>`);
