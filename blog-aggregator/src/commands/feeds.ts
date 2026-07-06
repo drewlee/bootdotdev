@@ -34,7 +34,7 @@ export async function handlerAddFeed(
   printFeed(feed, user);
 }
 
-export async function handlerFeeds(cmdName: string, ...args: string[]): Promise<void> {
+export async function handlerFeeds(): Promise<void> {
   const records = await getFeeds();
 
   if (!records) {

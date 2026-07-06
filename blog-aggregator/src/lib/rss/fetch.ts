@@ -16,7 +16,13 @@ export type RSSItem = {
   pubDate: string;
 };
 
-export async function fetchFeed(feedURL: string) {
+/**
+ * Fetches and parses the specified RSS feed.
+ *
+ * @param feedURL - Feed URL to fetch.
+ * @returns Parsed RSS feed as an object.
+ */
+export async function fetchFeed(feedURL: string): Promise<RSSFeed> {
   const response = await fetch(feedURL, {
     headers: {
       'User-Agent': 'gator',
