@@ -1,12 +1,12 @@
-GET http://localhost:8080/healthz
+GET http://localhost:8080/api/healthz
 
 ###
 
-GET http://localhost:8080/reset
+GET http://localhost:8080/admin/metrics
 
 ###
 
-GET http://localhost:8080/metrics
+POST http://localhost:8080/admin/reset
 
 ###
 
