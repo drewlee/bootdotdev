@@ -49,6 +49,45 @@ function handlerReadiness(_: Request, res: Response): void {
   res.send('OK');
 }
 
+/**
+ * Handler for the POST `/api/validate_chirp` path.
+ * Validates Chirp format.
+ *
+ * @param req - HTTP request object.
+ * @param res - HTTP response object.
+ */
+function handlerValidateChirp(req: Request, res: Response): void {
+  let body = '';
+
+  res.header('Content-Type', 'application/json');
+
+  req.on('data', (chunk) => {
+    body += chunk;
+  });
+
+  req.on('end', () => {
+    try {
+      const parsed = JSON.parse(body);
+
+      if (!parsed || !parsed.body) {
+        res.status(400).send(
+          JSON.stringify({ error: 'Missing required body property' })
+        );
+        return;
+      }
+
+      if (parsed.body.length > 140) {
+        res.status(400).send(JSON.stringify({ error: 'Chirp is too long' }));
+        return;
+      }
+
+      res.status(200).send(JSON.stringify({ valid: true }));
+    } catch (error) {
+      res.status(400).send(JSON.stringify({ error: 'Invalid JSON format' }));
+    }
+  })
+}
+
 // Middleware
 app.use(middlewareLogResponse);
 app.use('/app', middlewareMetricsInc, express.static('./src/app'));
@@ -57,6 +96,7 @@ app.use('/app', middlewareMetricsInc, express.static('./src/app'));
 app.get('/admin/metrics', handlerMetrics);
 app.post('/admin/reset', handlerReset);
 app.get('/api/healthz', handlerReadiness);
+app.post('/api/validate_chirp', handlerValidateChirp);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
