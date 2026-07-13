@@ -1,6 +1,7 @@
 import express, { type Request, type Response } from 'express';
 import { middlewareLogResponse, middlewareMetricsInc } from './api/middleware.js';
 import { config } from './config.js';
+import { cleanWords } from './utils/clean-words.js';
 
 const app = express();
 const PORT = 8080;
@@ -57,38 +58,26 @@ function handlerReadiness(_: Request, res: Response): void {
  * @param res - HTTP response object.
  */
 function handlerValidateChirp(req: Request, res: Response): void {
-  let body = '';
+  const { body } = req;
 
-  res.header('Content-Type', 'application/json');
+  if (!body || !body.body) {
+    res.status(400).send(
+      JSON.stringify({ error: 'Missing required body property' })
+    );
+    return;
+  }
 
-  req.on('data', (chunk) => {
-    body += chunk;
-  });
+  if (body.body.length > 140) {
+    res.status(400).send(JSON.stringify({ error: 'Chirp is too long' }));
+    return;
+  }
 
-  req.on('end', () => {
-    try {
-      const parsed = JSON.parse(body);
-
-      if (!parsed || !parsed.body) {
-        res.status(400).send(
-          JSON.stringify({ error: 'Missing required body property' })
-        );
-        return;
-      }
-
-      if (parsed.body.length > 140) {
-        res.status(400).send(JSON.stringify({ error: 'Chirp is too long' }));
-        return;
-      }
-
-      res.status(200).send(JSON.stringify({ valid: true }));
-    } catch (error) {
-      res.status(400).send(JSON.stringify({ error: 'Invalid JSON format' }));
-    }
-  })
+  const cleanedBody = cleanWords(body.body);
+  res.status(200).send(JSON.stringify({ cleanedBody }));
 }
 
 // Middleware
+app.use(express.json())
 app.use(middlewareLogResponse);
 app.use('/app', middlewareMetricsInc, express.static('./src/app'));
 

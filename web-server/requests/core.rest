@@ -11,6 +11,15 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:8080/api/validate_chirp
+Content-Type: application/json
+
+{
+  "body": "This is a kerfuffle opinion I need to share with the world"
+}
+
+###
+
 GET http://localhost:8080/admin/metrics
 
 ###
