@@ -1,5 +1,9 @@
-import express, { type Request, type Response } from 'express';
-import { middlewareLogResponse, middlewareMetricsInc } from './api/middleware.js';
+import express, { type NextFunction, type Request, type Response } from 'express';
+import {
+  middlewareErrorHandler,
+  middlewareLogResponse,
+  middlewareMetricsInc
+} from './api/middleware.js';
 import { config } from './config.js';
 import { cleanWords } from './utils/clean-words.js';
 
@@ -13,7 +17,7 @@ const PORT = 8080;
  * @param _ - HTTP request object.
  * @param res - HTTP response object.
  */
-function handlerMetrics(_: Request, res: Response): void {
+function handlerMetrics(_: Request, res: Response, next: NextFunction): void {
   res.set('Content-Type', 'text/html; charset=utf-8');
   res.send(
     `<html>
@@ -23,6 +27,8 @@ function handlerMetrics(_: Request, res: Response): void {
       </body>
     </html>`
   );
+
+  next();
 }
 
 /**
@@ -32,10 +38,12 @@ function handlerMetrics(_: Request, res: Response): void {
  * @param _ - HTTP request object.
  * @param res - HTTP response object.
  */
-function handlerReset(_: Request, res: Response): void {
+function handlerReset(_: Request, res: Response, next: NextFunction): void {
   config.fileServerHits = 0;
   res.write('Hits reset to 0');
   res.end();
+
+  next();
 }
 
 /**
@@ -45,9 +53,11 @@ function handlerReset(_: Request, res: Response): void {
  * @param _ - HTTP request object.
  * @param res - HTTP response object.
  */
-function handlerReadiness(_: Request, res: Response): void {
+function handlerReadiness(_: Request, res: Response, next: NextFunction): void {
   res.set('Content-Type', 'text/plain; charset=utf-8');
   res.send('OK');
+
+  next();
 }
 
 /**
@@ -57,7 +67,7 @@ function handlerReadiness(_: Request, res: Response): void {
  * @param req - HTTP request object.
  * @param res - HTTP response object.
  */
-function handlerValidateChirp(req: Request, res: Response): void {
+function handlerValidateChirp(req: Request, res: Response, next: NextFunction): void {
   const { body } = req;
 
   if (!body || !body.body) {
@@ -68,12 +78,13 @@ function handlerValidateChirp(req: Request, res: Response): void {
   }
 
   if (body.body.length > 140) {
-    res.status(400).send(JSON.stringify({ error: 'Chirp is too long' }));
-    return;
+    throw new Error('Chirp is too long');
   }
 
   const cleanedBody = cleanWords(body.body);
   res.status(200).send(JSON.stringify({ cleanedBody }));
+
+  next();
 }
 
 // Middleware
@@ -86,6 +97,8 @@ app.get('/admin/metrics', handlerMetrics);
 app.post('/admin/reset', handlerReset);
 app.get('/api/healthz', handlerReadiness);
 app.post('/api/validate_chirp', handlerValidateChirp);
+
+app.use(middlewareErrorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);

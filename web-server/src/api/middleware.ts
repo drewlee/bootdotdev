@@ -36,3 +36,23 @@ export function middlewareMetricsInc(
   config.fileServerHits++;
   next();
 }
+
+/**
+ * Middleware function for handling errors.
+ *
+ * @param err - Error instance.
+ * @param _ - HTTP request object.
+ * @param res - HTTP response object.
+ * @param next - Next middleware function to yield to.
+ */
+export function middlewareErrorHandler(
+  err: Error,
+  _: Request,
+  res: Response,
+  next: NextFunction
+): void {
+  console.error(err);
+  res.status(500).json({ error: 'Something went wrong on our end' });
+
+  next(err);
+}
