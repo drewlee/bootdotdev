@@ -6,6 +6,7 @@ import {
 } from './api/middleware.js';
 import { config } from './config.js';
 import { cleanWords } from './utils/clean-words.js';
+import { ValidationError } from './utils/custom-errors.js';
 
 const app = express();
 const PORT = 8080;
@@ -68,20 +69,17 @@ function handlerReadiness(_: Request, res: Response, next: NextFunction): void {
  * @param res - HTTP response object.
  */
 function handlerValidateChirp(req: Request, res: Response, next: NextFunction): void {
-  const { body } = req;
+  const data = req.body;
 
-  if (!body || !body.body) {
-    res.status(400).send(
-      JSON.stringify({ error: 'Missing required body property' })
-    );
-    return;
+  if (!data || !data.body) {
+    throw new ValidationError('Missing required `body` property');
   }
 
-  if (body.body.length > 140) {
-    throw new Error('Chirp is too long');
+  if (data.body.length > 140) {
+    throw new ValidationError('Chirp is too long. Max length is 140');
   }
 
-  const cleanedBody = cleanWords(body.body);
+  const cleanedBody = cleanWords(data.body);
   res.status(200).send(JSON.stringify({ cleanedBody }));
 
   next();

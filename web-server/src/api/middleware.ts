@@ -1,5 +1,11 @@
 import type { NextFunction, Request, Response } from 'express';
 import { config } from '../config.js';
+import {
+  ValidationError,
+  UnauthorizedError,
+  PermissionError,
+  NotFoundError,
+} from '../utils/custom-errors.js';
 
 /**
  * Middleware function for logging non-ok status codes.
@@ -52,7 +58,16 @@ export function middlewareErrorHandler(
   next: NextFunction
 ): void {
   console.error(err);
-  res.status(500).json({ error: 'Something went wrong on our end' });
 
-  next(err);
+  if (err instanceof ValidationError) {
+    res.status(400).json({ error: err.message });
+  } else if (err instanceof UnauthorizedError) {
+    res.status(401).json({ error: err.message });
+  } else if (err instanceof PermissionError) {
+    res.status(403).json({ error: err.message });
+  } else if (err instanceof NotFoundError) {
+    res.status(404).json({ error: err.message });
+  } else {
+    res.status(500).json({ error: 'Something went wrong on our end' });
+  }
 }
