@@ -12,3 +12,4 @@ dist/
 heifer/
 ts-proj/
 node_modules/
+tsconfig.tsbuildinfo
