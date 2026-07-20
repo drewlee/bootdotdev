@@ -1,6 +1,21 @@
 import process from 'node:process';
+import type { MigrationConfig } from 'drizzle-orm/migrator';
 
 process.loadEnvFile();
+
+type DBConfig = {
+  url: string;
+  migrationConfig: MigrationConfig;
+};
+
+type APIConfig = {
+  fileServerHits: number;
+  db: DBConfig;
+};
+
+const migrationConfig: MigrationConfig = {
+  migrationsFolder: './src/db/out',
+};
 
 function envOrThrow(key: string): string {
   if (process.env[key]) {
@@ -10,12 +25,10 @@ function envOrThrow(key: string): string {
   throw new Error(`Missing key ${key} environment variable`);
 }
 
-type APIConfig = {
-  fileServerHits: number;
-  dbURL: string;
-};
-
 export const config: APIConfig = {
   fileServerHits: 0,
-  dbURL: envOrThrow('DB_URL'),
+  db: {
+    url: envOrThrow('DB_URL'),
+    migrationConfig,
+  },
 };

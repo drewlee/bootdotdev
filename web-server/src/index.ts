@@ -1,4 +1,7 @@
 import express, { type NextFunction, type Request, type Response } from 'express';
+import postgres from 'postgres';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import { drizzle } from 'drizzle-orm/postgres-js';
 import {
   middlewareErrorHandler,
   middlewareLogResponse,
@@ -10,6 +13,9 @@ import { ValidationError } from './utils/custom-errors.js';
 
 const app = express();
 const PORT = 8080;
+const migrationClient = postgres(config.db.url, { max: 1 });
+
+await migrate(drizzle(migrationClient), config.db.migrationConfig);
 
 /**
  * Handler for the GET `/admin/metrics` path.
