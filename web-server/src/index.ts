@@ -9,7 +9,8 @@ import {
 } from './api/middleware.js';
 import { config } from './config.js';
 import { cleanWords } from './utils/clean-words.js';
-import { ValidationError } from './utils/custom-errors.js';
+import { ValidationError, PermissionError } from './utils/custom-errors.js';
+import { createUser, deleteUsers } from './db/queries/users.js';
 
 const app = express();
 const PORT = 8080;
@@ -23,6 +24,7 @@ await migrate(drizzle(migrationClient), config.db.migrationConfig);
  *
  * @param _ - HTTP request object.
  * @param res - HTTP response object.
+ * @param next - Next middleware function to yield to.
  */
 function handlerMetrics(_: Request, res: Response, next: NextFunction): void {
   res.set('Content-Type', 'text/html; charset=utf-8');
@@ -30,7 +32,7 @@ function handlerMetrics(_: Request, res: Response, next: NextFunction): void {
     `<html>
       <body>
         <h1>Welcome, Chirpy Admin</h1>
-        <p>Chirpy has been visited ${config.fileServerHits} times!</p>
+        <p>Chirpy has been visited ${config.api.fileServerHits} times!</p>
       </body>
     </html>`
   );
@@ -40,17 +42,27 @@ function handlerMetrics(_: Request, res: Response, next: NextFunction): void {
 
 /**
  * Handler for the POST `/admin/reset` path.
- * Resets the collected hit metrics.
+ * Resets the collected hit metrics & deletes all user records.
  *
  * @param _ - HTTP request object.
  * @param res - HTTP response object.
+ * @param next - Next middleware function to yield to.
  */
 function handlerReset(_: Request, res: Response, next: NextFunction): void {
-  config.fileServerHits = 0;
-  res.write('Hits reset to 0');
-  res.end();
+  if (config.api.platform !== 'dev') {
+    next(new PermissionError('Reset is only allowed in dev environment'));
+    return;
+  }
 
-  next();
+  deleteUsers()
+    .then(() => {
+      config.api.fileServerHits = 0;
+
+      res.write('Hits reset to 0');
+      res.end();
+      next();
+    })
+    .catch(next);
 }
 
 /**
@@ -59,6 +71,7 @@ function handlerReset(_: Request, res: Response, next: NextFunction): void {
  *
  * @param _ - HTTP request object.
  * @param res - HTTP response object.
+ * @param next - Next middleware function to yield to.
  */
 function handlerReadiness(_: Request, res: Response, next: NextFunction): void {
   res.set('Content-Type', 'text/plain; charset=utf-8');
@@ -73,22 +86,52 @@ function handlerReadiness(_: Request, res: Response, next: NextFunction): void {
  *
  * @param req - HTTP request object.
  * @param res - HTTP response object.
+ * @param next - Next middleware function to yield to.
  */
 function handlerValidateChirp(req: Request, res: Response, next: NextFunction): void {
   const data = req.body;
 
   if (!data || !data.body) {
-    throw new ValidationError('Missing required `body` property');
+    next(new ValidationError('Missing required `body` property'));
+    return;
   }
 
   if (data.body.length > 140) {
-    throw new ValidationError('Chirp is too long. Max length is 140');
+    next(new ValidationError('Chirp is too long. Max length is 140'));
+    return;
   }
 
   const cleanedBody = cleanWords(data.body);
   res.status(200).send(JSON.stringify({ cleanedBody }));
-
   next();
+}
+
+/**
+ * Handler for the POST `/api/users` path.
+ * Creates a new record for the specified user.
+ *
+ * @param req - HTTP request object.
+ * @param res - HTTP response object.
+ * @param next - Next middleware function to yield to.
+ */
+function handlerCreateUser(req: Request, res: Response, next: NextFunction): void {
+  const { email }: { email: string } = req.body;
+
+  if (!email) {
+    next(new ValidationError('Missing required fields'));
+    return;
+  }
+
+  createUser({ email })
+    .then((user) => {
+      if (!user) {
+        throw new Error('Failed to create new user');
+      }
+
+      res.status(201).json(user);
+      next();
+    })
+    .catch(next);
 }
 
 // Middleware
@@ -101,6 +144,7 @@ app.get('/admin/metrics', handlerMetrics);
 app.post('/admin/reset', handlerReset);
 app.get('/api/healthz', handlerReadiness);
 app.post('/api/validate_chirp', handlerValidateChirp);
+app.post('/api/users', handlerCreateUser);
 
 app.use(middlewareErrorHandler);
 

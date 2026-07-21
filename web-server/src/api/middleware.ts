@@ -39,7 +39,7 @@ export function middlewareMetricsInc(
   __: Response,
   next: NextFunction,
 ): void {
-  config.fileServerHits++;
+  config.api.fileServerHits++;
   next();
 }
 
@@ -70,4 +70,6 @@ export function middlewareErrorHandler(
   } else {
     res.status(500).json({ error: 'Something went wrong on our end' });
   }
+
+  next();
 }
