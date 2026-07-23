@@ -8,6 +8,13 @@
       "when": 1784328432623,
       "tag": "0000_tiny_ezekiel",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784764252899,
+      "tag": "0001_dizzy_blink",
+      "breakpoints": true
     }
   ]
 }

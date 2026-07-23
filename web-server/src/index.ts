@@ -11,6 +11,7 @@ import { config } from './config.js';
 import { cleanWords } from './utils/clean-words.js';
 import { ValidationError, PermissionError } from './utils/custom-errors.js';
 import { createUser, deleteUsers } from './db/queries/users.js';
+import { createChirp } from './db/queries/chirps.js';
 
 const app = express();
 const PORT = 8080;
@@ -81,29 +82,38 @@ function handlerReadiness(_: Request, res: Response, next: NextFunction): void {
 }
 
 /**
- * Handler for the POST `/api/validate_chirp` path.
- * Validates Chirp format.
+ * Handler for the POST `/api/chirp` path.
+ * Creates a new record for the specified chirp.
  *
  * @param req - HTTP request object.
  * @param res - HTTP response object.
  * @param next - Next middleware function to yield to.
  */
-function handlerValidateChirp(req: Request, res: Response, next: NextFunction): void {
-  const data = req.body;
+function handlerCreateChirp(req: Request, res: Response, next: NextFunction): void {
+  const { body, userId } = req.body;
 
-  if (!data || !data.body) {
-    next(new ValidationError('Missing required `body` property'));
+  if (!body || !userId) {
+    next(new ValidationError('Missing required property'));
     return;
   }
 
-  if (data.body.length > 140) {
+  if (body.length > 140) {
     next(new ValidationError('Chirp is too long. Max length is 140'));
     return;
   }
 
-  const cleanedBody = cleanWords(data.body);
-  res.status(200).send(JSON.stringify({ cleanedBody }));
-  next();
+  const cleanedBody = cleanWords(body);
+
+  createChirp({ body: cleanedBody, userId })
+    .then((chirp) => {
+      if (!chirp) {
+        throw new Error('Failed to create new chirp');
+      }
+
+      res.status(201).json(chirp);
+      next();
+    })
+    .catch(next);
 }
 
 /**
@@ -143,7 +153,7 @@ app.use('/app', middlewareMetricsInc, express.static('./src/app'));
 app.get('/admin/metrics', handlerMetrics);
 app.post('/admin/reset', handlerReset);
 app.get('/api/healthz', handlerReadiness);
-app.post('/api/validate_chirp', handlerValidateChirp);
+app.post('/api/chirps', handlerCreateChirp);
 app.post('/api/users', handlerCreateUser);
 
 app.use(middlewareErrorHandler);
