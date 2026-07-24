@@ -8,10 +8,13 @@ import {
   middlewareMetricsInc
 } from './api/middleware.js';
 import { config } from './config.js';
-import { cleanWords } from './utils/clean-words.js';
-import { ValidationError, PermissionError } from './utils/custom-errors.js';
+import { BadRequestError, ForbiddenError } from './utils/custom-errors.js';
 import { createUser, deleteUsers } from './db/queries/users.js';
-import { createChirp } from './db/queries/chirps.js';
+import {
+  handlerCreateChirp,
+  handlerGetAllChirps,
+  handlerGetChirp,
+} from './api/chirps.js';
 
 const app = express();
 const PORT = 8080;
@@ -51,7 +54,7 @@ function handlerMetrics(_: Request, res: Response, next: NextFunction): void {
  */
 function handlerReset(_: Request, res: Response, next: NextFunction): void {
   if (config.api.platform !== 'dev') {
-    next(new PermissionError('Reset is only allowed in dev environment'));
+    next(new ForbiddenError('Reset is only allowed in dev environment'));
     return;
   }
 
@@ -82,41 +85,6 @@ function handlerReadiness(_: Request, res: Response, next: NextFunction): void {
 }
 
 /**
- * Handler for the POST `/api/chirp` path.
- * Creates a new record for the specified chirp.
- *
- * @param req - HTTP request object.
- * @param res - HTTP response object.
- * @param next - Next middleware function to yield to.
- */
-function handlerCreateChirp(req: Request, res: Response, next: NextFunction): void {
-  const { body, userId } = req.body;
-
-  if (!body || !userId) {
-    next(new ValidationError('Missing required property'));
-    return;
-  }
-
-  if (body.length > 140) {
-    next(new ValidationError('Chirp is too long. Max length is 140'));
-    return;
-  }
-
-  const cleanedBody = cleanWords(body);
-
-  createChirp({ body: cleanedBody, userId })
-    .then((chirp) => {
-      if (!chirp) {
-        throw new Error('Failed to create new chirp');
-      }
-
-      res.status(201).json(chirp);
-      next();
-    })
-    .catch(next);
-}
-
-/**
  * Handler for the POST `/api/users` path.
  * Creates a new record for the specified user.
  *
@@ -128,7 +96,7 @@ function handlerCreateUser(req: Request, res: Response, next: NextFunction): voi
   const { email }: { email: string } = req.body;
 
   if (!email) {
-    next(new ValidationError('Missing required fields'));
+    next(new BadRequestError('Missing required fields'));
     return;
   }
 
@@ -153,7 +121,10 @@ app.use('/app', middlewareMetricsInc, express.static('./src/app'));
 app.get('/admin/metrics', handlerMetrics);
 app.post('/admin/reset', handlerReset);
 app.get('/api/healthz', handlerReadiness);
-app.post('/api/chirps', handlerCreateChirp);
+app.route('/api/chirps')
+  .get(handlerGetAllChirps)
+  .post(handlerCreateChirp);
+app.get('/api/chirps/:chirpId', handlerGetChirp);
 app.post('/api/users', handlerCreateUser);
 
 app.use(middlewareErrorHandler);

@@ -1,9 +1,17 @@
+GET http://localhost:8080/api/chirps
+
+###
+
+GET http://localhost:8080/api/chirps/0fc416dc-9134-4cfa-abe0-7b31e99a92e0
+
+###
+
 POST http://localhost:8080/api/chirps
 Content-Type: application/json
 
 {
   "body": "I had something interesting for breakfast",
-  "userId": "74f468ec-9529-493b-ba41-9330d2d4b578"
+  "userId": "671da411-ccb7-41e3-b531-b1a47fa175a8"
 }
 
 ###
@@ -13,7 +21,7 @@ Content-Type: application/json
 
 {
   "body": "This is a kerfuffle opinion I need to share with the world",
-  "userId": "74f468ec-9529-493b-ba41-9330d2d4b578"
+  "userId": "666a1e66-e30c-4530-b64f-95e508be203f"
 }
 
 ###

@@ -1,3 +1,4 @@
+import { asc, eq } from 'drizzle-orm';
 import { db } from '../index.js';
 import { type NewChirp, type Chirp, chirps } from '../schema.js';
 
@@ -12,6 +13,35 @@ export async function createChirp(chirp: NewChirp): Promise<Chirp> {
     .insert(chirps)
     .values(chirp)
     .returning();
+
+  return result;
+}
+
+/**
+ * Retrieves all chirp records.
+ *
+ * @returns Chirp records.
+ */
+export async function getAllChirps(): Promise<Chirp[]> {
+  const results = await db
+    .select()
+    .from(chirps)
+    .orderBy(asc(chirps.createdAt));
+
+  return results;
+}
+
+/**
+ * Retrieves chirp record for the specified id.
+ *
+ * @param chirpId - Chirp id.
+ * @returns Chirp record.
+ */
+export async function getChirpById(chirpId: string): Promise<Chirp> {
+  const [result] = await db
+    .select()
+    .from(chirps)
+    .where(eq(chirps.id, chirpId));
 
   return result;
 }

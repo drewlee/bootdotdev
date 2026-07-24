@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from 'express';
 import { config } from '../config.js';
 import {
-  ValidationError,
+  BadRequestError,
   UnauthorizedError,
-  PermissionError,
+  ForbiddenError,
   NotFoundError,
 } from '../utils/custom-errors.js';
 
@@ -59,11 +59,11 @@ export function middlewareErrorHandler(
 ): void {
   console.error(err);
 
-  if (err instanceof ValidationError) {
+  if (err instanceof BadRequestError) {
     res.status(400).json({ error: err.message });
   } else if (err instanceof UnauthorizedError) {
     res.status(401).json({ error: err.message });
-  } else if (err instanceof PermissionError) {
+  } else if (err instanceof ForbiddenError) {
     res.status(403).json({ error: err.message });
   } else if (err instanceof NotFoundError) {
     res.status(404).json({ error: err.message });
