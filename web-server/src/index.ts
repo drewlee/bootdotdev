@@ -106,32 +106,28 @@ function handlerCreateUser(req: Request, res: Response, next: NextFunction): voi
   }
 
   hashPassword(password)
-    .then((hashedPassword) => {
-      return createUser({ email, hashedPassword });
-    })
+    .then((hashedPassword) => createUser({ email, hashedPassword }))
     .then((user) => {
       if (!user) {
         throw new Error('Failed to create new user');
       }
 
-      type User = typeof user;
-      type OUser = Omit<User, 'hashedPassword'>;
-      type OUserValues = OUser[keyof OUser];
+      const { hashedPassword: _, ...nUser } = user;
 
-      const oUser = {} as OUser;
-
-      for (const [key, value] of Object.entries(user)) {
-        if (key !== 'hashedPassword') {
-          (oUser[key as keyof OUser] as OUserValues) = value;
-        }
-      }
-
-      res.status(201).json(oUser);
+      res.status(201).json(nUser);
       next();
     })
     .catch(next);
 }
 
+/**
+ * Handler for the POST `/api/login` path.
+ * Validates auth for the specified user info.
+ *
+ * @param req - HTTP request object.
+ * @param res - HTTP response object.
+ * @param next - Next middleware function to yield to.
+ */
 function handlerLogin(req: Request, res: Response, next: NextFunction): void {
   const { email, password }: { email: string, password: string } = req.body;
   const authError = new UnauthorizedError('Incorrect email or password');
@@ -143,31 +139,18 @@ function handlerLogin(req: Request, res: Response, next: NextFunction): void {
 
   getUserByEmail(email)
     .then((user) => {
-      return Promise.all([checkPasswordHash(password, user.hashedPassword), user]);
+      const isValidPassword = checkPasswordHash(password, user.hashedPassword);
+      return Promise.all([isValidPassword, user]);
     })
     .then(([isValidPassword, user]) => {
       if (!isValidPassword) {
         throw authError;
       }
 
-      function copyPartialObj<T>(obj: Record<string, any>, keysToOmit: string[]): T {
-        const copy = {} as T;
-
-        for (const [key, value] of Object.entries(obj)) {
-          if (!keysToOmit.includes(key)) {
-            copy[key as keyof T] = value;
-          }
-        }
-
-        return copy;
-      }
-
-      const nUser = copyPartialObj<Omit<typeof user, 'hashedPassword'>>(
-        user,
-        ['hashedPassword']
-      );
+      const { hashedPassword: _, ...nUser } = user;
 
       res.status(200).json(nUser);
+      next();
     })
     .catch(next);
 }

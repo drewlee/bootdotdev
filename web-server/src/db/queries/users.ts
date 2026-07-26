@@ -25,7 +25,12 @@ export async function deleteUsers(): Promise<void> {
   await db.delete(users);
 }
 
-
+/**
+ * Retrieves the user record for the specified email address.
+ *
+ * @param email - Email address.
+ * @returns User record.
+ */
 export async function getUserByEmail(email: string): Promise<User> {
   const [result] = await db
     .select()
