@@ -12,7 +12,7 @@ import { createChirp, getAllChirps, getChirpById } from '../db/queries/chirps.js
  * @param next - Next middleware function to yield to.
  */
 export function handlerCreateChirp(req: Request, res: Response, next: NextFunction): void {
-  const { body, userId } = req.body;
+  const { body, userId }: { body: string, userId: string } = req.body;
 
   if (!body || !userId) {
     next(new BadRequestError('Missing required property'));
@@ -63,9 +63,13 @@ export function handlerGetAllChirps(_: Request, res: Response, next: NextFunctio
  * @param next - Next middleware function to yield to.
  */
 export function handlerGetChirp(req: Request, res: Response, next: NextFunction): void {
-  const { chirpId } = req.params;
+  let { chirpId } = req.params;
 
-  getChirpById(chirpId as string)
+  if (Array.isArray(chirpId)) {
+    chirpId = chirpId[0];
+  }
+
+  getChirpById(chirpId)
     .then((chirp) => {
       if (!chirp) {
         next(new NotFoundError('Chirp not found for the corresponding id'));

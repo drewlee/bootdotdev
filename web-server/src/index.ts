@@ -8,8 +8,13 @@ import {
   middlewareMetricsInc
 } from './api/middleware.js';
 import { config } from './config.js';
-import { BadRequestError, ForbiddenError } from './utils/custom-errors.js';
-import { createUser, deleteUsers } from './db/queries/users.js';
+import {
+  BadRequestError,
+  UnauthorizedError,
+  ForbiddenError
+} from './utils/custom-errors.js';
+import { hashPassword, checkPasswordHash } from './utils/auth.js';
+import { createUser, deleteUsers, getUserByEmail } from './db/queries/users.js';
 import {
   handlerCreateChirp,
   handlerGetAllChirps,
@@ -93,21 +98,76 @@ function handlerReadiness(_: Request, res: Response, next: NextFunction): void {
  * @param next - Next middleware function to yield to.
  */
 function handlerCreateUser(req: Request, res: Response, next: NextFunction): void {
-  const { email }: { email: string } = req.body;
+  const { email, password }: { email: string, password: string } = req.body;
 
-  if (!email) {
-    next(new BadRequestError('Missing required fields'));
+  if (!email || !password) {
+    next(new BadRequestError('Missing required properties'));
     return;
   }
 
-  createUser({ email })
+  hashPassword(password)
+    .then((hashedPassword) => {
+      return createUser({ email, hashedPassword });
+    })
     .then((user) => {
       if (!user) {
         throw new Error('Failed to create new user');
       }
 
-      res.status(201).json(user);
+      type User = typeof user;
+      type OUser = Omit<User, 'hashedPassword'>;
+      type OUserValues = OUser[keyof OUser];
+
+      const oUser = {} as OUser;
+
+      for (const [key, value] of Object.entries(user)) {
+        if (key !== 'hashedPassword') {
+          (oUser[key as keyof OUser] as OUserValues) = value;
+        }
+      }
+
+      res.status(201).json(oUser);
       next();
+    })
+    .catch(next);
+}
+
+function handlerLogin(req: Request, res: Response, next: NextFunction): void {
+  const { email, password }: { email: string, password: string } = req.body;
+  const authError = new UnauthorizedError('Incorrect email or password');
+
+  if (!email || !password) {
+    next(authError);
+    return;
+  }
+
+  getUserByEmail(email)
+    .then((user) => {
+      return Promise.all([checkPasswordHash(password, user.hashedPassword), user]);
+    })
+    .then(([isValidPassword, user]) => {
+      if (!isValidPassword) {
+        throw authError;
+      }
+
+      function copyPartialObj<T>(obj: Record<string, any>, keysToOmit: string[]): T {
+        const copy = {} as T;
+
+        for (const [key, value] of Object.entries(obj)) {
+          if (!keysToOmit.includes(key)) {
+            copy[key as keyof T] = value;
+          }
+        }
+
+        return copy;
+      }
+
+      const nUser = copyPartialObj<Omit<typeof user, 'hashedPassword'>>(
+        user,
+        ['hashedPassword']
+      );
+
+      res.status(200).json(nUser);
     })
     .catch(next);
 }
@@ -126,6 +186,7 @@ app.route('/api/chirps')
   .post(handlerCreateChirp);
 app.get('/api/chirps/:chirpId', handlerGetChirp);
 app.post('/api/users', handlerCreateUser);
+app.post('/api/login', handlerLogin);
 
 app.use(middlewareErrorHandler);
 
