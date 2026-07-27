@@ -1,4 +1,10 @@
 import argon2 from 'argon2';
+import jwt, { type JwtPayload } from 'jsonwebtoken';
+import { UnauthorizedError } from './custom-errors.js';
+
+type Payload = Pick<JwtPayload, 'iss' | 'sub' | 'iat' | 'exp'>;
+
+const TOKEN_ISSUER = 'chirpy';
 
 /**
  * Creates and returns a hash for the given password.
@@ -21,4 +27,53 @@ export async function hashPassword(password: string): Promise<string> {
 export async function checkPasswordHash(password: string, hash: string): Promise<boolean> {
   const isMatch = await argon2.verify(hash, password);
   return isMatch;
+}
+
+/**
+ * Creates and returns a new JSON web token.
+ *
+ * @param userID - User ID.
+ * @param expiresIn - Expiration timestamp in seconds.
+ * @param secret - Secret value for token creation.
+ * @returns New JSON web token.
+ */
+export function makeJWT(userID: string, expiresIn: number, secret: string): string {
+  const iat = Math.floor(Date.now() / 1000);
+  const exp = iat + expiresIn;
+  const payload: Payload = {
+    iss: TOKEN_ISSUER, // issuer
+    sub: userID,       // subject
+    iat,               // time of issue in seconds
+    exp,               // time of expiration in seconds
+  };
+  const token = jwt.sign(payload, secret);
+
+  return token;
+}
+
+/**
+ * Verifies the given JWT token and returns its decoded user ID.
+ *
+ * @param tokenString - Token to verify.
+ * @param secret - Secret value for token verification.
+ * @returns User ID.
+ */
+export function validateJWT(tokenString: string, secret: string): string {
+  let payload: Payload;
+
+  try {
+    payload = jwt.verify(tokenString, secret) as JwtPayload;
+  } catch (error) {
+    throw new UnauthorizedError('Invalid token');
+  }
+
+  if (payload.iss !== TOKEN_ISSUER) {
+    throw new UnauthorizedError('Invalid issuer');
+  }
+
+  if (!payload.sub) {
+    throw new UnauthorizedError('Invalid user ID');
+  }
+
+  return payload.sub;
 }
