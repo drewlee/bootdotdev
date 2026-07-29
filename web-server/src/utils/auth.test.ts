@@ -1,6 +1,13 @@
 import { describe, test, expect, beforeAll } from 'vitest';
+import type { Request } from 'express';
 import { UnauthorizedError } from './custom-errors.js';
-import { hashPassword, checkPasswordHash, makeJWT, validateJWT } from './auth.js';
+import {
+  hashPassword,
+  checkPasswordHash,
+  makeJWT,
+  validateJWT,
+  getBearerToken,
+} from './auth.js';
 
 describe('Password hashing', () => {
   const password1 = 'correctPassword123!';
@@ -67,3 +74,27 @@ describe('JSON web token validation', () => {
     expect(() => validateJWT(token, secret)).toThrow(UnauthorizedError);
   });
 });
+
+describe('Token extraction', () => {
+  test('Returns the extracted token', () => {
+    const token = 'abc123xyz';
+    const auth = `Bearer ${token}`;
+    const req = { get() { return auth; } } as unknown as Request;
+
+    const result = getBearerToken(req);
+    expect(result).toBe(token);
+  });
+
+  test('Throws error if missing prefix', () => {
+    const token = 'abc123xyz';
+    const req = { get() { return token; } } as unknown as Request;
+
+    expect(() => getBearerToken(req)).toThrow(UnauthorizedError)
+  });
+
+  test('Throws error if missing token', () => {
+    const req = { get() { return ''; } } as unknown as Request;
+
+    expect(() => getBearerToken(req)).toThrow(UnauthorizedError)
+  });
+})

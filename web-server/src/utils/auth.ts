@@ -1,5 +1,6 @@
 import argon2 from 'argon2';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
+import type { Request } from 'express';
 import { UnauthorizedError } from './custom-errors.js';
 
 type Payload = Pick<JwtPayload, 'iss' | 'sub' | 'iat' | 'exp'>;
@@ -76,4 +77,21 @@ export function validateJWT(tokenString: string, secret: string): string {
   }
 
   return payload.sub;
+}
+
+/**
+ * Retrieves the bearer authorization token from the HTTP request object.
+ *
+ * @param req - HTTP request object.
+ * @returns Bearer authorization token.
+ */
+export function getBearerToken(req: Request): string {
+  const prefix = 'Bearer ';
+  const auth = req.get('Authorization');
+
+  if (auth && auth.startsWith(prefix)) {
+    return auth.slice(prefix.length);
+  }
+
+  throw new UnauthorizedError('Token not found');
 }

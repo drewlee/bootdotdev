@@ -2,6 +2,8 @@ import { type NextFunction, type Request, type Response } from 'express';
 import { BadRequestError, NotFoundError } from '../utils/custom-errors.js';
 import { cleanWords } from '../utils/clean-words.js';
 import { createChirp, getAllChirps, getChirpById } from '../db/queries/chirps.js';
+import { getBearerToken, validateJWT } from '../utils/auth.js';
+import { config } from '../config.js';
 
 /**
  * Handler for the POST `/api/chirps` path.
@@ -12,7 +14,9 @@ import { createChirp, getAllChirps, getChirpById } from '../db/queries/chirps.js
  * @param next - Next middleware function to yield to.
  */
 export function handlerCreateChirp(req: Request, res: Response, next: NextFunction): void {
-  const { body, userId }: { body: string, userId: string } = req.body;
+  const { body }: { body: string } = req.body;
+  const token = getBearerToken(req);
+  const userId = validateJWT(token, config.api.secret);
 
   if (!body || !userId) {
     next(new BadRequestError('Missing required property'));

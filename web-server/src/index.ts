@@ -13,7 +13,7 @@ import {
   UnauthorizedError,
   ForbiddenError
 } from './utils/custom-errors.js';
-import { hashPassword, checkPasswordHash } from './utils/auth.js';
+import { hashPassword, checkPasswordHash, makeJWT } from './utils/auth.js';
 import { createUser, deleteUsers, getUserByEmail } from './db/queries/users.js';
 import {
   handlerCreateChirp,
@@ -129,7 +129,17 @@ function handlerCreateUser(req: Request, res: Response, next: NextFunction): voi
  * @param next - Next middleware function to yield to.
  */
 function handlerLogin(req: Request, res: Response, next: NextFunction): void {
-  const { email, password }: { email: string, password: string } = req.body;
+  type LoginResponse = {
+    email: string;
+    password: string;
+    expiresInSeconds?: number;
+  }
+
+  const oneHour = 60 * 60;
+  const { email, password, expiresInSeconds }: LoginResponse = req.body;
+  const expiration = !expiresInSeconds || expiresInSeconds > oneHour
+    ? oneHour
+    : expiresInSeconds;
   const authError = new UnauthorizedError('Incorrect email or password');
 
   if (!email || !password) {
@@ -147,7 +157,12 @@ function handlerLogin(req: Request, res: Response, next: NextFunction): void {
         throw authError;
       }
 
-      const { hashedPassword: _, ...nUser } = user;
+      const { hashedPassword: _, ...oUser } = user;
+      const token = makeJWT(oUser.id, expiration, config.api.secret);
+      const nUser = {
+        ...oUser,
+        token,
+      };
 
       res.status(200).json(nUser);
       next();
