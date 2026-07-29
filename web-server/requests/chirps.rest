@@ -2,34 +2,34 @@ GET http://localhost:8080/api/chirps
 
 ###
 
-GET http://localhost:8080/api/chirps/0fc416dc-9134-4cfa-abe0-7b31e99a92e0
+GET http://localhost:8080/api/chirps/bec4808f-1167-478f-b8e6-83a74376cda9
 
 ###
 
 POST http://localhost:8080/api/chirps
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaGlycHkiLCJzdWIiOiJkODMyZTdiZS1hZjBlLTQ2M2ItYTBiYS0xNWRiYzg1OGQ2NDgiLCJpYXQiOjE3ODUzNjM1MjAsImV4cCI6MTc4NTM2NzEyMH0.SdvqG99-uHSTrObHONHbhFtosDzMdVnv5BSVazRxxj0
 
 {
-  "body": "I had something interesting for breakfast",
-  "userId": "671da411-ccb7-41e3-b531-b1a47fa175a8"
+  "body": "I had something interesting for breakfast"
 }
 
 ###
 
 POST http://localhost:8080/api/chirps
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaGlycHkiLCJzdWIiOiJkODMyZTdiZS1hZjBlLTQ2M2ItYTBiYS0xNWRiYzg1OGQ2NDgiLCJpYXQiOjE3ODUzNjM1MjAsImV4cCI6MTc4NTM2NzEyMH0.SdvqG99-uHSTrObHONHbhFtosDzMdVnv5BSVazRxxj0
 
 {
-  "body": "This is a kerfuffle opinion I need to share with the world",
-  "userId": "666a1e66-e30c-4530-b64f-95e508be203f"
+  "body": "This is a kerfuffle opinion I need to share with the world"
 }
 
 ###
 
 POST http://localhost:8080/api/chirps
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJjaGlycHkiLCJzdWIiOiJkODMyZTdiZS1hZjBlLTQ2M2ItYTBiYS0xNWRiYzg1OGQ2NDgiLCJpYXQiOjE3ODUzNjM1MjAsImV4cCI6MTc4NTM2NzEyMH0.SdvqG99-uHSTrObHONHbhFtosDzMdVnv5BSVazRxxj0
 
 {
-  "body": "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  "userId": "1234"
+  "body": "lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 }
