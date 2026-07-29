@@ -133,13 +133,12 @@ function handlerLogin(req: Request, res: Response, next: NextFunction): void {
     email: string;
     password: string;
     expiresInSeconds?: number;
-  }
+  };
 
-  const oneHour = 60 * 60;
   const { email, password, expiresInSeconds }: LoginResponse = req.body;
-  const expiration = !expiresInSeconds || expiresInSeconds > oneHour
-    ? oneHour
-    : expiresInSeconds;
+  const expiration = expiresInSeconds && expiresInSeconds <= config.jwt.defaultDuration
+    ? expiresInSeconds
+    : config.jwt.defaultDuration;
   const authError = new UnauthorizedError('Incorrect email or password');
 
   if (!email || !password) {
@@ -158,11 +157,11 @@ function handlerLogin(req: Request, res: Response, next: NextFunction): void {
       }
 
       const { hashedPassword: _, ...oUser } = user;
-      const token = makeJWT(oUser.id, expiration, config.api.secret);
+      const token = makeJWT(oUser.id, expiration, config.jwt.secret);
       const nUser = {
         ...oUser,
         token,
-      };
+      } satisfies Omit<typeof user, 'hashedPassword'> & { token: string };
 
       res.status(200).json(nUser);
       next();

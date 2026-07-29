@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
 import type { Request } from 'express';
-import { UnauthorizedError } from './custom-errors.js';
+import { UnauthorizedError, BadRequestError } from './custom-errors.js';
 
 type Payload = Pick<JwtPayload, 'iss' | 'sub' | 'iat' | 'exp'>;
 
@@ -80,18 +80,36 @@ export function validateJWT(tokenString: string, secret: string): string {
 }
 
 /**
+ * Extracts the bearer authorization token from the given header string.
+ *
+ * @param header - Header string.
+ * @returns Bearer authorization token.
+ */
+export function extractBearerToken(header: string): string {
+  const prefix = 'Bearer ';
+
+  if (header.startsWith(prefix)) {
+    const token = header.slice(prefix.length);
+    if (token.length > 0) {
+      return token;
+    }
+  }
+
+  throw new BadRequestError('Malformed authorization header');
+}
+
+/**
  * Retrieves the bearer authorization token from the HTTP request object.
  *
  * @param req - HTTP request object.
  * @returns Bearer authorization token.
  */
 export function getBearerToken(req: Request): string {
-  const prefix = 'Bearer ';
   const auth = req.get('Authorization');
 
-  if (auth && auth.startsWith(prefix)) {
-    return auth.slice(prefix.length);
+  if (!auth) {
+    throw new BadRequestError('Malformed authorization header');  
   }
 
-  throw new UnauthorizedError('Token not found');
+  return extractBearerToken(auth);
 }

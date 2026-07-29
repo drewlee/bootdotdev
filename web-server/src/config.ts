@@ -7,7 +7,6 @@ type APIConfig = {
   fileServerHits: number;
   platform: string;
   port: number;
-  secret: string;
 };
 
 type DBConfig = {
@@ -15,10 +14,17 @@ type DBConfig = {
   migrationConfig: MigrationConfig;
 };
 
+type JWTConfig = {
+  defaultDuration: number;
+  secret: string;
+  issuer: string;
+};
+
 type Config = {
   api: APIConfig;
   db: DBConfig;
-}
+  jwt: JWTConfig;
+};
 
 const migrationConfig: MigrationConfig = {
   migrationsFolder: './src/db/out',
@@ -28,7 +34,7 @@ function envOrThrow(key: string): string {
   if (process.env[key]) {
     return process.env[key];
   }
-  throw new Error(`Missing key ${key} environment variable`);
+  throw new Error(`Environment variable ${key} is not set`);
 }
 
 export const config: Config = {
@@ -36,10 +42,14 @@ export const config: Config = {
     fileServerHits: 0,
     platform: envOrThrow('PLATFORM'),
     port: Number(envOrThrow('PORT')),
-    secret: envOrThrow('SECRET'),
   },
   db: {
     url: envOrThrow('DB_URL'),
     migrationConfig,
+  },
+  jwt: {
+    defaultDuration:  60 * 60, // 1 hour in seconds
+    secret: envOrThrow('JWT_SECRET'),
+    issuer: 'chirpy',
   },
 };

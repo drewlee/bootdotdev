@@ -1,12 +1,12 @@
 import { describe, test, expect, beforeAll } from 'vitest';
 import type { Request } from 'express';
-import { UnauthorizedError } from './custom-errors.js';
+import { UnauthorizedError, BadRequestError } from './custom-errors.js';
 import {
   hashPassword,
   checkPasswordHash,
   makeJWT,
   validateJWT,
-  getBearerToken,
+  extractBearerToken,
 } from './auth.js';
 
 describe('Password hashing', () => {
@@ -75,26 +75,26 @@ describe('JSON web token validation', () => {
   });
 });
 
-describe('Token extraction', () => {
+describe('Bearer header token retrieval', () => {
   test('Returns the extracted token', () => {
     const token = 'abc123xyz';
     const auth = `Bearer ${token}`;
-    const req = { get() { return auth; } } as unknown as Request;
 
-    const result = getBearerToken(req);
+    const result = extractBearerToken(auth);
     expect(result).toBe(token);
   });
 
   test('Throws error if missing prefix', () => {
-    const token = 'abc123xyz';
-    const req = { get() { return token; } } as unknown as Request;
-
-    expect(() => getBearerToken(req)).toThrow(UnauthorizedError)
+    const auth = 'abc123xyz';
+    expect(() => extractBearerToken(auth)).toThrow(BadRequestError)
   });
 
   test('Throws error if missing token', () => {
-    const req = { get() { return ''; } } as unknown as Request;
+    const auth = 'Bearer ';
+    expect(() => extractBearerToken(auth)).toThrow(BadRequestError)
+  });
 
-    expect(() => getBearerToken(req)).toThrow(UnauthorizedError)
+  test('Throws error for empty string', () => {
+    expect(() => extractBearerToken('')).toThrow(BadRequestError)
   });
 })
