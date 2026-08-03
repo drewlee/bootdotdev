@@ -1,5 +1,6 @@
 import argon2 from 'argon2';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
+import crypto from 'node:crypto';
 import type { Request } from 'express';
 import { UnauthorizedError, BadRequestError } from './custom-errors.js';
 
@@ -112,4 +113,14 @@ export function getBearerToken(req: Request): string {
   }
 
   return extractBearerToken(auth);
+}
+
+/**
+ * TODO
+ *
+ * @returns 
+ */
+export function makeRefreshToken(): string {
+  const rawToken = crypto.randomBytes(32);
+  return rawToken.toString('hex');
 }

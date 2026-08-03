@@ -13,13 +13,15 @@ import {
   UnauthorizedError,
   ForbiddenError
 } from './utils/custom-errors.js';
-import { hashPassword, checkPasswordHash, makeJWT } from './utils/auth.js';
+import { hashPassword, checkPasswordHash, makeJWT, makeRefreshToken } from './utils/auth.js';
 import { createUser, deleteUsers, getUserByEmail } from './db/queries/users.js';
+import { createRefreshToken } from './db/queries/refreshTokens.js';
 import {
   handlerCreateChirp,
   handlerGetAllChirps,
   handlerGetChirp,
 } from './api/chirps.js';
+import { handlerRefresh, handlerRevoke } from './api/refresh-token.js';
 
 const app = express();
 const PORT = 8080;
@@ -132,13 +134,9 @@ function handlerLogin(req: Request, res: Response, next: NextFunction): void {
   type LoginResponse = {
     email: string;
     password: string;
-    expiresInSeconds?: number;
   };
 
-  const { email, password, expiresInSeconds }: LoginResponse = req.body;
-  const expiration = expiresInSeconds && expiresInSeconds <= config.jwt.defaultDuration
-    ? expiresInSeconds
-    : config.jwt.defaultDuration;
+  const { email, password }: LoginResponse = req.body;
   const authError = new UnauthorizedError('Incorrect email or password');
 
   if (!email || !password) {
@@ -157,12 +155,18 @@ function handlerLogin(req: Request, res: Response, next: NextFunction): void {
       }
 
       const { hashedPassword: _, ...oUser } = user;
-      const token = makeJWT(oUser.id, expiration, config.jwt.secret);
+      const token = makeJWT(oUser.id, config.jwt.defaultDuration, config.jwt.secret);
+      const refreshToken = makeRefreshToken();
       const nUser = {
         ...oUser,
         token,
-      } satisfies Omit<typeof user, 'hashedPassword'> & { token: string };
+        refreshToken,
+      } satisfies Omit<typeof user, 'hashedPassword'> & { token: string, refreshToken: string };
+      const refreshTokenResult = createRefreshToken(refreshToken, user.id)
 
+      return Promise.all([nUser, refreshTokenResult]);
+    })
+    .then(([nUser]) => {
       res.status(200).json(nUser);
       next();
     })
@@ -184,6 +188,8 @@ app.route('/api/chirps')
 app.get('/api/chirps/:chirpId', handlerGetChirp);
 app.post('/api/users', handlerCreateUser);
 app.post('/api/login', handlerLogin);
+app.post('/api/refresh', handlerRefresh);
+app.post('/api/revoke', handlerRevoke);
 
 app.use(middlewareErrorHandler);
 
