@@ -18,7 +18,7 @@ export function handlerCreateChirp(req: Request, res: Response, next: NextFuncti
   const token = getBearerToken(req);
   const userId = validateJWT(token, config.jwt.secret);
 
-  if (!body || !userId) {
+  if (!body) {
     next(new BadRequestError('Missing required property'));
     return;
   }

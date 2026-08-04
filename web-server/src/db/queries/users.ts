@@ -39,3 +39,25 @@ export async function getUserByEmail(email: string): Promise<User> {
 
   return result;
 }
+
+/**
+ * Updates the user record for the specified id and returns it.
+ *
+ * @param id - User id.
+ * @param email - User email address.
+ * @param hashedPassword - Hashed password.
+ * @returns Updated user record.
+ */
+export async function updateUser(id: string, email: string, hashedPassword: string): Promise<User> {
+  const [result] = await db
+    .update(users)
+    .set({
+      id,
+      email,
+      hashedPassword,
+    })
+    .where(eq(users.id, id))
+    .returning();
+
+  return result;
+}

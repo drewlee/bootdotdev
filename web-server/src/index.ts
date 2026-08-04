@@ -10,12 +10,11 @@ import {
 } from './api/middleware.js';
 import { config } from './config.js';
 import {
-  BadRequestError,
   UnauthorizedError,
   ForbiddenError
 } from './utils/custom-errors.js';
-import { hashPassword, checkPasswordHash, makeJWT, makeRefreshToken } from './utils/auth.js';
-import { createUser, deleteUsers, getUserByEmail } from './db/queries/users.js';
+import { checkPasswordHash, makeJWT, makeRefreshToken } from './utils/auth.js';
+import { deleteUsers, getUserByEmail } from './db/queries/users.js';
 import { saveRefreshToken } from './db/queries/refresh-tokens.js';
 import {
   handlerCreateChirp,
@@ -23,6 +22,7 @@ import {
   handlerGetChirp,
 } from './api/chirps.js';
 import { handlerRefresh, handlerRevoke } from './api/refresh-token.js';
+import { handlerCreateUser, handlerUpdateUser } from './api/users.js';
 
 type UserRequest = {
   email: string;
@@ -103,41 +103,6 @@ function handlerReadiness(_: Request, res: Response, next: NextFunction): void {
 }
 
 /**
- * Handler for the POST `/api/users` path.
- * Creates a new record for the specified user.
- *
- * @param req - HTTP request object.
- * @param res - HTTP response object.
- * @param next - Next middleware function to yield to.
- */
-function handlerCreateUser(req: Request, res: Response, next: NextFunction): void {
-  const { email, password }: UserRequest = req.body;
-
-  if (!email || !password) {
-    next(new BadRequestError('Missing required properties'));
-    return;
-  }
-
-  hashPassword(password)
-    .then((hashedPassword) => createUser({ email, hashedPassword }))
-    .then((user) => {
-      if (!user) {
-        throw new Error('Failed to create new user');
-      }
-
-      res.status(201).json({
-        id: user.id,
-        email: user.email,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      } satisfies UserResponse);
-
-      next();
-    })
-    .catch(next);
-}
-
-/**
  * Handler for the POST `/api/login` path.
  * Validates auth for the specified user info.
  *
@@ -207,7 +172,9 @@ app.route('/api/chirps')
   .get(handlerGetAllChirps)
   .post(handlerCreateChirp);
 app.get('/api/chirps/:chirpId', handlerGetChirp);
-app.post('/api/users', handlerCreateUser);
+app.route('/api/users')
+  .post(handlerCreateUser)
+  .put(handlerUpdateUser);
 app.post('/api/login', handlerLogin);
 app.post('/api/refresh', handlerRefresh);
 app.post('/api/revoke', handlerRevoke);

@@ -109,7 +109,7 @@ export function getBearerToken(req: Request): string {
   const auth = req.get('Authorization');
 
   if (!auth) {
-    throw new BadRequestError('Malformed authorization header');  
+    throw new UnauthorizedError('Malformed authorization header');  
   }
 
   return extractBearerToken(auth);
