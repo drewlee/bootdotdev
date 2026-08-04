@@ -2,14 +2,15 @@ import { type NextFunction, type Request, type Response } from 'express';
 import { config } from '../config.js';
 import { getBearerToken, makeJWT } from '../utils/auth.js';
 import { UnauthorizedError } from '../utils/custom-errors.js';
-import { getRefreshTokenRecord, revokeRefreshToken } from '../db/queries/refreshTokens.js';
+import { getRefreshTokenRecord, revokeRefreshToken } from '../db/queries/refresh-tokens.js';
 
 /**
- * TODO
+ * Handler for the POST `/api/refresh` path.
+ * Validates auth for the specified user info.
  *
- * @param req 
- * @param res 
- * @param next 
+ * @param req - HTTP request object.
+ * @param res - HTTP response object.
+ * @param next - Next middleware function to yield to.
  */
 export function handlerRefresh(req: Request, res: Response, next: NextFunction): void {
   const token = getBearerToken(req);
@@ -17,7 +18,7 @@ export function handlerRefresh(req: Request, res: Response, next: NextFunction):
   getRefreshTokenRecord(token)
     .then((result) => {
       if (!result || result.revokedAt || result.expiresAt < new Date()) {
-        next(new UnauthorizedError('Not authorized'));
+        next(new UnauthorizedError('Invalid refresh token'));
         return;
       }
 
@@ -28,18 +29,24 @@ export function handlerRefresh(req: Request, res: Response, next: NextFunction):
 }
 
 /**
- * TODO
+ * Handler for the POST `/api/revoke` path.
+ * Revokes the record for the specified token.
  *
- * @param req 
- * @param res 
- * @param next 
+ * @param req - HTTP request object.
+ * @param res - HTTP response object.
+ * @param next - Next middleware function to yield to.
  */
 export function handlerRevoke(req: Request, res: Response, next: NextFunction): void {
   const token = getBearerToken(req);
 
   revokeRefreshToken(token)
-    .then(() => {
-      res.status(204).end()
+    .then((result) => {
+      if (!result) {
+        throw new Error('Unable to revoke token');
+      }
+
+      res.status(204).end();
+      next();
     })
     .catch(next);
 }

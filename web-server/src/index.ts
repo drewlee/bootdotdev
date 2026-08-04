@@ -2,6 +2,7 @@ import express, { type NextFunction, type Request, type Response } from 'express
 import postgres from 'postgres';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { drizzle } from 'drizzle-orm/postgres-js';
+import type { User } from './db/schema.js';
 import {
   middlewareErrorHandler,
   middlewareLogResponse,
@@ -15,13 +16,23 @@ import {
 } from './utils/custom-errors.js';
 import { hashPassword, checkPasswordHash, makeJWT, makeRefreshToken } from './utils/auth.js';
 import { createUser, deleteUsers, getUserByEmail } from './db/queries/users.js';
-import { createRefreshToken } from './db/queries/refreshTokens.js';
+import { saveRefreshToken } from './db/queries/refresh-tokens.js';
 import {
   handlerCreateChirp,
   handlerGetAllChirps,
   handlerGetChirp,
 } from './api/chirps.js';
 import { handlerRefresh, handlerRevoke } from './api/refresh-token.js';
+
+type UserRequest = {
+  email: string;
+  password: string;
+};
+type UserResponse = Omit<User, 'hashedPassword'>;
+type LoginResponse = UserResponse & {
+  token: string;
+  refreshToken: string;
+};
 
 const app = express();
 const PORT = 8080;
@@ -100,7 +111,7 @@ function handlerReadiness(_: Request, res: Response, next: NextFunction): void {
  * @param next - Next middleware function to yield to.
  */
 function handlerCreateUser(req: Request, res: Response, next: NextFunction): void {
-  const { email, password }: { email: string, password: string } = req.body;
+  const { email, password }: UserRequest = req.body;
 
   if (!email || !password) {
     next(new BadRequestError('Missing required properties'));
@@ -114,9 +125,13 @@ function handlerCreateUser(req: Request, res: Response, next: NextFunction): voi
         throw new Error('Failed to create new user');
       }
 
-      const { hashedPassword: _, ...nUser } = user;
+      res.status(201).json({
+        id: user.id,
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      } satisfies UserResponse);
 
-      res.status(201).json(nUser);
       next();
     })
     .catch(next);
@@ -131,12 +146,7 @@ function handlerCreateUser(req: Request, res: Response, next: NextFunction): voi
  * @param next - Next middleware function to yield to.
  */
 function handlerLogin(req: Request, res: Response, next: NextFunction): void {
-  type LoginResponse = {
-    email: string;
-    password: string;
-  };
-
-  const { email, password }: LoginResponse = req.body;
+  const { email, password }: UserRequest = req.body;
   const authError = new UnauthorizedError('Incorrect email or password');
 
   if (!email || !password) {
@@ -146,28 +156,39 @@ function handlerLogin(req: Request, res: Response, next: NextFunction): void {
 
   getUserByEmail(email)
     .then((user) => {
-      const isValidPassword = checkPasswordHash(password, user.hashedPassword);
-      return Promise.all([isValidPassword, user]);
+      if (!user) {
+        throw authError;
+      }
+
+      return checkPasswordHash(password, user.hashedPassword)
+        .then((isValidPassword) => isValidPassword ? user : null);
     })
-    .then(([isValidPassword, user]) => {
-      if (!isValidPassword) {
+    .then((user) => {
+      if (!user) {
         throw authError;
       }
 
       const { hashedPassword: _, ...oUser } = user;
-      const token = makeJWT(oUser.id, config.jwt.defaultDuration, config.jwt.secret);
+      const token = makeJWT(user.id, config.jwt.defaultDuration, config.jwt.secret);
       const refreshToken = makeRefreshToken();
-      const nUser = {
-        ...oUser,
+      const loginResponse = {
+        id: user.id,
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
         token,
         refreshToken,
-      } satisfies Omit<typeof user, 'hashedPassword'> & { token: string, refreshToken: string };
-      const refreshTokenResult = createRefreshToken(refreshToken, user.id)
+      } satisfies LoginResponse;
 
-      return Promise.all([nUser, refreshTokenResult]);
+      return saveRefreshToken(refreshToken, user.id)
+        .then((result) => result ? loginResponse : null);
     })
-    .then(([nUser]) => {
-      res.status(200).json(nUser);
+    .then((loginResponse) => {
+      if (!loginResponse) {
+        throw authError;
+      }
+
+      res.status(200).json(loginResponse);
       next();
     })
     .catch(next);

@@ -116,11 +116,10 @@ export function getBearerToken(req: Request): string {
 }
 
 /**
- * TODO
+ * Generates a random refresh token.
  *
- * @returns 
+ * @returns Refresh token.
  */
 export function makeRefreshToken(): string {
-  const rawToken = crypto.randomBytes(32);
-  return rawToken.toString('hex');
+  return crypto.randomBytes(32).toString('hex');
 }
