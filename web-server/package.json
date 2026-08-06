@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc --build",
     "build:clean": "tsc --build --clean",
-    "build:watch": "tsc --watch",
+    "build:dev": "tsc --watch",
     "dev": "node --watch dist/index.js",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",

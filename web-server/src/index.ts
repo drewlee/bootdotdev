@@ -20,6 +20,7 @@ import {
   handlerCreateChirp,
   handlerGetAllChirps,
   handlerGetChirp,
+  handlerDeleteChirp,
 } from './api/chirps.js';
 import { handlerRefresh, handlerRevoke } from './api/refresh-token.js';
 import { handlerCreateUser, handlerUpdateUser } from './api/users.js';
@@ -168,11 +169,16 @@ app.use('/app', middlewareMetricsInc, express.static('./src/app'));
 app.get('/admin/metrics', handlerMetrics);
 app.post('/admin/reset', handlerReset);
 app.get('/api/healthz', handlerReadiness);
-app.route('/api/chirps')
+app
+  .route('/api/chirps')
   .get(handlerGetAllChirps)
   .post(handlerCreateChirp);
-app.get('/api/chirps/:chirpId', handlerGetChirp);
-app.route('/api/users')
+app
+  .route('/api/chirps/:chirpId')
+  .get(handlerGetChirp)
+  .delete(handlerDeleteChirp);
+app
+  .route('/api/users')
   .post(handlerCreateUser)
   .put(handlerUpdateUser);
 app.post('/api/login', handlerLogin);

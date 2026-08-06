@@ -1,7 +1,7 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import { BadRequestError, NotFoundError } from '../utils/custom-errors.js';
+import { BadRequestError, ForbiddenError, NotFoundError } from '../utils/custom-errors.js';
 import { cleanWords } from '../utils/clean-words.js';
-import { createChirp, getAllChirps, getChirpById } from '../db/queries/chirps.js';
+import { createChirp, deleteChirp, getAllChirps, getChirpById } from '../db/queries/chirps.js';
 import { getBearerToken, validateJWT } from '../utils/auth.js';
 import { config } from '../config.js';
 
@@ -55,7 +55,8 @@ export function handlerGetAllChirps(_: Request, res: Response, next: NextFunctio
     .then((chirps) => {
       res.status(200).json(chirps);
       next();
-    }).catch(next);
+    })
+    .catch(next);
 }
 
 /**
@@ -82,6 +83,43 @@ export function handlerGetChirp(req: Request, res: Response, next: NextFunction)
 
       res.status(200).json(chirp);
       next();
+    })
+    .catch(next);
+}
+
+/**
+ * Handler for the DELETE `/api/chirps/:chirpId` path.
+ * Deletes the record for the specified chirp by its id.
+ *
+ * @param req - HTTP request object.
+ * @param res - HTTP response object.
+ * @param next - Next middleware function to yield to.
+ */
+export function handlerDeleteChirp(req: Request, res: Response, next: NextFunction): void {
+  const token = getBearerToken(req);
+  const userId = validateJWT(token, config.jwt.secret);
+  let { chirpId } = req.params;
+
+  if (Array.isArray(chirpId)) {
+    chirpId = chirpId[0];
+  }
+
+  getChirpById(chirpId)
+    .then((chirp) => {
+      if (!chirp) {
+        next(new NotFoundError('Chirp not found for the corresponding id'));
+        return;
+      }
+
+      if (chirp.userId !== userId) {
+        next(new ForbiddenError('Not authorized to delete chirp'));
+        return;
+      }
+
+      return deleteChirp(chirpId);
+    })
+    .then(() => {
+      res.status(204).end()
     })
     .catch(next);
 }

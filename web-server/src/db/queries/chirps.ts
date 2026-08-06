@@ -1,4 +1,4 @@
-import { asc, eq } from 'drizzle-orm';
+import { asc, and, eq } from 'drizzle-orm';
 import { db } from '../index.js';
 import { type NewChirp, type Chirp, chirps } from '../schema.js';
 
@@ -44,4 +44,16 @@ export async function getChirpById(chirpId: string): Promise<Chirp> {
     .where(eq(chirps.id, chirpId));
 
   return result;
+}
+
+/**
+ * Deletes chirp record for the specified id.
+ *
+ * @param chirpId - Chirp id.
+ * @param userId - User id.
+ */
+export async function deleteChirp(chirpId: string): Promise<void> {
+  await db
+    .delete(chirps)
+    .where(eq(chirps.id, chirpId));
 }
