@@ -29,6 +29,13 @@
       "when": 1785796115947,
       "tag": "0003_pretty_morph",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786143614507,
+      "tag": "0004_striped_warbird",
+      "breakpoints": true
     }
   ]
 }

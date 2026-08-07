@@ -43,21 +43,39 @@ export async function getUserByEmail(email: string): Promise<User> {
 /**
  * Updates the user record for the specified id and returns it.
  *
- * @param id - User id.
+ * @param userId - User id.
  * @param email - User email address.
  * @param hashedPassword - Hashed password.
  * @returns Updated user record.
  */
-export async function updateUser(id: string, email: string, hashedPassword: string): Promise<User> {
+export async function updateUser(userId: string, email: string, hashedPassword: string): Promise<User> {
   const [result] = await db
     .update(users)
     .set({
-      id,
+      id: userId,
       email,
       hashedPassword,
     })
-    .where(eq(users.id, id))
+    .where(eq(users.id, userId))
     .returning();
 
   return result;
+}
+
+/**
+ * Updates the user for the specified id to a Chirpy red user.
+ *
+ * @param userId - User id.
+ * @returns Whether the record was successfully updated.
+ */
+export async function updateUserToChirpyRed(userId: string): Promise<boolean> {
+  const result = await db
+    .update(users)
+    .set({ isChirpyRed: true })
+    .where(eq(users.id, userId))
+    .returning();
+
+  console.log(result);
+
+  return result.length > 0;
 }

@@ -40,6 +40,7 @@ export function handlerCreateUser(req: Request, res: Response, next: NextFunctio
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        isChirpyRed: user.isChirpyRed,
       } satisfies UserResponse);
 
       next();
@@ -77,6 +78,7 @@ export function handlerUpdateUser(req: Request, res: Response, next: NextFunctio
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        isChirpyRed: user.isChirpyRed,
       } satisfies UserResponse);
 
       next();

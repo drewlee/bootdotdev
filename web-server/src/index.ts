@@ -24,6 +24,7 @@ import {
 } from './api/chirps.js';
 import { handlerRefresh, handlerRevoke } from './api/refresh-token.js';
 import { handlerCreateUser, handlerUpdateUser } from './api/users.js';
+import { handlerPolkaWebhook } from './api/webhooks.js'
 
 type UserRequest = {
   email: string;
@@ -142,6 +143,7 @@ function handlerLogin(req: Request, res: Response, next: NextFunction): void {
         email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
+        isChirpyRed: user.isChirpyRed,
         token,
         refreshToken,
       } satisfies LoginResponse;
@@ -184,6 +186,7 @@ app
 app.post('/api/login', handlerLogin);
 app.post('/api/refresh', handlerRefresh);
 app.post('/api/revoke', handlerRevoke);
+app.post('/api/polka/webhooks', handlerPolkaWebhook);
 
 app.use(middlewareErrorHandler);
 

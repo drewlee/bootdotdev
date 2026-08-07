@@ -1,0 +1,22 @@
+POST http://localhost:8080/api/polka/webhooks
+Content-Type: application/json
+
+{
+  "event": "user.upgraded",
+  "data": {
+    "userId": "dd98d332-7ca3-4769-8cff-b04b4fc1121b"
+  }
+}
+
+###
+
+# Invalid user id
+POST http://localhost:8080/api/polka/webhooks
+Content-Type: application/json
+
+{
+  "event": "user.upgraded",
+  "data": {
+    "userId": "dd98d332-7ca3-4769-8cff-b04b4fc1121c"
+  }
+}
