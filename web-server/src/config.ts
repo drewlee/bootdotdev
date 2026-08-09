@@ -7,6 +7,7 @@ type APIConfig = {
   fileServerHits: number;
   platform: string;
   port: number;
+  polkaKey: string;
 };
 
 type DBConfig = {
@@ -43,6 +44,7 @@ export const config: Config = {
     fileServerHits: 0,
     platform: envOrThrow('PLATFORM'),
     port: Number(envOrThrow('PORT')),
+    polkaKey: envOrThrow('POLKA_KEY'),
   },
   db: {
     url: envOrThrow('DB_URL'),

@@ -1,5 +1,8 @@
 import { type NextFunction, type Request, type Response } from 'express';
+import { config } from '../config.js';
+import { UnauthorizedError } from '../utils/custom-errors.js';
 import { updateUserToChirpyRed } from '../db/queries/users.js';
+import { getAPIKey } from '../utils/auth.js';
 
 /**
  * Handler for the POST `/api/polka/webhooks` path.
@@ -16,6 +19,13 @@ export function handlerPolkaWebhook(req: Request, res: Response, next: NextFunct
       userId: string;
     };
   };
+
+  const apiKey = getAPIKey(req);
+
+  if (apiKey !== config.api.polkaKey) {
+    next(new UnauthorizedError('Resource access not authorized'));
+    return;
+  }
 
   const { event, data }: PolkaRequest = req.body;
 

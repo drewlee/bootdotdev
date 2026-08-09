@@ -106,13 +106,13 @@ export function extractBearerToken(header: string): string {
  * @returns Bearer authorization token.
  */
 export function getBearerToken(req: Request): string {
-  const auth = req.get('Authorization');
+  const authHeader = req.get('Authorization');
 
-  if (!auth) {
+  if (!authHeader) {
     throw new UnauthorizedError('Malformed authorization header');  
   }
 
-  return extractBearerToken(auth);
+  return extractBearerToken(authHeader);
 }
 
 /**
@@ -123,3 +123,39 @@ export function getBearerToken(req: Request): string {
 export function makeRefreshToken(): string {
   return crypto.randomBytes(32).toString('hex');
 }
+
+/**
+ * Extracts the Polka authorization API key from the given header string.
+ *
+ * @param header - Header string.
+ * @returns Polka API key.
+ */
+export function extractAPIKey(header: string): string {
+  const prefix = 'ApiKey ';
+
+  if (header.startsWith(prefix)) {
+    const token = header.slice(prefix.length);
+    if (token.length > 0) {
+      return token;
+    }
+  }
+
+  throw new BadRequestError('Malformed authorization header');
+}
+
+/**
+ * Retrieves the Polka authorization API key from the HTTP request object.
+ *
+ * @param req - HTTP request object.
+ * @returns Polka API key.
+ */
+export function getAPIKey(req: Request): string {
+  const authHeader = req.get('Authorization');
+
+  if (!authHeader) {
+    throw new UnauthorizedError('Malformed authorization header');  
+  }
+
+  return extractAPIKey(authHeader);
+}
+

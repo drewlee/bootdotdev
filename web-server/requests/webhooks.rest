@@ -1,10 +1,11 @@
 POST http://localhost:8080/api/polka/webhooks
 Content-Type: application/json
+Authorization: ApiKey f271c81ff7084ee5b99a5091b42d486e
 
 {
   "event": "user.upgraded",
   "data": {
-    "userId": "dd98d332-7ca3-4769-8cff-b04b4fc1121b"
+    "userId": "e11b0f02-09f5-47a2-af38-46ae4e105f6e"
   }
 }
 
@@ -13,10 +14,24 @@ Content-Type: application/json
 # Invalid user id
 POST http://localhost:8080/api/polka/webhooks
 Content-Type: application/json
+Authorization: ApiKey f271c81ff7084ee5b99a5091b42d486e
 
 {
   "event": "user.upgraded",
   "data": {
     "userId": "dd98d332-7ca3-4769-8cff-b04b4fc1121c"
+  }
+}
+
+###
+
+# No auth header
+POST http://localhost:8080/api/polka/webhooks
+Content-Type: application/json
+
+{
+  "event": "user.upgraded",
+  "data": {
+    "userId": "e11b0f02-09f5-47a2-af38-46ae4e105f6e"
   }
 }

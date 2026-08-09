@@ -1,5 +1,4 @@
 import { describe, test, expect, beforeAll } from 'vitest';
-import type { Request } from 'express';
 import { UnauthorizedError, BadRequestError } from './custom-errors.js';
 import {
   hashPassword,
@@ -7,6 +6,7 @@ import {
   makeJWT,
   validateJWT,
   extractBearerToken,
+  extractAPIKey,
 } from './auth.js';
 
 describe('Password hashing', () => {
@@ -97,4 +97,28 @@ describe('Bearer header token retrieval', () => {
   test('Throws error for empty string', () => {
     expect(() => extractBearerToken('')).toThrow(BadRequestError)
   });
-})
+});
+
+describe('Polka API key retrieval', () => {
+  test('Returns the extracted token', () => {
+    const token = 'abc123xyz';
+    const auth = `ApiKey ${token}`;
+
+    const result = extractAPIKey(auth);
+    expect(result).toBe(token);
+  });
+
+  test('Throws error if missing prefix', () => {
+    const auth = 'abc123xyz';
+    expect(() => extractAPIKey(auth)).toThrow(BadRequestError)
+  });
+
+  test('Throws error if missing token', () => {
+    const auth = 'Bearer ';
+    expect(() => extractAPIKey(auth)).toThrow(BadRequestError)
+  });
+
+  test('Throws error for empty string', () => {
+    expect(() => extractAPIKey('')).toThrow(BadRequestError)
+  });
+});
