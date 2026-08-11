@@ -47,6 +47,21 @@ export async function getChirpById(chirpId: string): Promise<Chirp> {
 }
 
 /**
+ * Retrieves all chirp records for the specified user id.
+ *
+ * @param chirpId - Chirp id.
+ * @returns Chirp record.
+ */
+export async function getChirpsByUserId(userId: string): Promise<Chirp[]> {
+  const results = await db
+    .select()
+    .from(chirps)
+    .where(eq(chirps.userId, userId));
+
+  return results;
+}
+
+/**
  * Deletes chirp record for the specified id.
  *
  * @param chirpId - Chirp id.

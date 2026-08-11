@@ -1,7 +1,13 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../utils/custom-errors.js';
 import { cleanWords } from '../utils/clean-words.js';
-import { createChirp, deleteChirp, getAllChirps, getChirpById } from '../db/queries/chirps.js';
+import {
+  createChirp,
+  deleteChirp,
+  getAllChirps,
+  getChirpById,
+  getChirpsByUserId
+} from '../db/queries/chirps.js';
 import { getBearerToken, validateJWT } from '../utils/auth.js';
 import { config } from '../config.js';
 
@@ -50,11 +56,22 @@ export function handlerCreateChirp(req: Request, res: Response, next: NextFuncti
  * @param res - HTTP response object.
  * @param next - Next middleware function to yield to.
  */
-export function handlerGetAllChirps(_: Request, res: Response, next: NextFunction): void {
+export function handlerGetAllChirps(req: Request, res: Response, next: NextFunction): void {
+  const authorId = req.query.authorId;
+
+  if (typeof authorId === 'string' && authorId !== '') {
+    getChirpsByUserId(authorId)
+      .then((chirps) => {
+        res.status(200).json(chirps);
+      })
+      .catch(next);
+
+    return;
+  }
+
   getAllChirps()
     .then((chirps) => {
       res.status(200).json(chirps);
-      next();
     })
     .catch(next);
 }
