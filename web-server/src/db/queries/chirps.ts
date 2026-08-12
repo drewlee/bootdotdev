@@ -1,6 +1,19 @@
-import { asc, and, eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import { db } from '../index.js';
 import { type NewChirp, type Chirp, chirps } from '../schema.js';
+import type { SortOption } from '../../types/index.js';
+
+type OrderByFn = typeof asc | typeof desc;
+
+/**
+ * Returns the order by function corresponding to the given parameter.
+ *
+ * @param sortOrder - Sort order value.
+ * @returns Order by function.
+ */
+function getOrderByFn(sortOrder: SortOption): OrderByFn {
+  return sortOrder === 'asc' ? asc : desc;
+}
 
 /**
  * Inserts a new record for the specified chirp.
@@ -22,11 +35,12 @@ export async function createChirp(chirp: NewChirp): Promise<Chirp> {
  *
  * @returns Chirp records.
  */
-export async function getAllChirps(): Promise<Chirp[]> {
+export async function getAllChirps(sortOrder: SortOption = 'asc'): Promise<Chirp[]> {
+  const sortFn = getOrderByFn(sortOrder);
   const results = await db
     .select()
     .from(chirps)
-    .orderBy(asc(chirps.createdAt));
+    .orderBy(sortFn(chirps.createdAt));
 
   return results;
 }
@@ -52,11 +66,16 @@ export async function getChirpById(chirpId: string): Promise<Chirp> {
  * @param chirpId - Chirp id.
  * @returns Chirp record.
  */
-export async function getChirpsByUserId(userId: string): Promise<Chirp[]> {
+export async function getChirpsByUserId(
+  userId: string,
+  sortOrder: SortOption = 'asc'
+): Promise<Chirp[]> {
+  const sortFn = getOrderByFn(sortOrder);
   const results = await db
     .select()
     .from(chirps)
-    .where(eq(chirps.userId, userId));
+    .where(eq(chirps.userId, userId))
+    .orderBy(sortFn(chirps.createdAt));
 
   return results;
 }

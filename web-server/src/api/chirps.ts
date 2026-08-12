@@ -1,4 +1,5 @@
 import { type NextFunction, type Request, type Response } from 'express';
+import { SORT_OPTIONS, type SortOption } from '../types/index.js';
 import { BadRequestError, ForbiddenError, NotFoundError } from '../utils/custom-errors.js';
 import { cleanWords } from '../utils/clean-words.js';
 import {
@@ -10,6 +11,22 @@ import {
 } from '../db/queries/chirps.js';
 import { getBearerToken, validateJWT } from '../utils/auth.js';
 import { config } from '../config.js';
+
+/**
+ * Validates and returns the corresponding sorting order from the given parameter.
+ *
+ * @param sortOrder - Potential sort order value to validate.
+ * @returns Sorting order value.
+ */
+function getSortOrder(sortOrder: unknown): SortOption {
+  if (typeof sortOrder === 'string') {
+    const tSort = sortOrder as SortOption;
+    if (SORT_OPTIONS.includes(tSort)) {
+      return tSort;
+    }
+  }
+  return SORT_OPTIONS[0];
+}
 
 /**
  * Handler for the POST `/api/chirps` path.
@@ -57,10 +74,11 @@ export function handlerCreateChirp(req: Request, res: Response, next: NextFuncti
  * @param next - Next middleware function to yield to.
  */
 export function handlerGetAllChirps(req: Request, res: Response, next: NextFunction): void {
-  const authorId = req.query.authorId;
+  const { authorId, sort } = req.query;
+  const sortOrder = getSortOrder(sort);
 
   if (typeof authorId === 'string' && authorId !== '') {
-    getChirpsByUserId(authorId)
+    getChirpsByUserId(authorId, sortOrder)
       .then((chirps) => {
         res.status(200).json(chirps);
       })
@@ -69,7 +87,7 @@ export function handlerGetAllChirps(req: Request, res: Response, next: NextFunct
     return;
   }
 
-  getAllChirps()
+  getAllChirps(sortOrder)
     .then((chirps) => {
       res.status(200).json(chirps);
     })
