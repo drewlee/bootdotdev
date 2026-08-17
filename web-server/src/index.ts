@@ -3,19 +3,19 @@ import postgres from 'postgres';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import type { User } from './db/schema.js';
+import { deleteUsers, getUserByEmail } from './db/queries/users.js';
+import { saveRefreshToken } from './db/queries/refresh-tokens.js';
+import { config } from './config.js';
 import {
   middlewareErrorHandler,
   middlewareLogResponse,
   middlewareMetricsInc
 } from './api/middleware.js';
-import { config } from './config.js';
 import {
   UnauthorizedError,
   ForbiddenError
 } from './utils/custom-errors.js';
 import { checkPasswordHash, makeJWT, makeRefreshToken } from './utils/auth.js';
-import { deleteUsers, getUserByEmail } from './db/queries/users.js';
-import { saveRefreshToken } from './db/queries/refresh-tokens.js';
 import {
   handlerCreateChirp,
   handlerGetAllChirps,
