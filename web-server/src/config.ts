@@ -32,6 +32,13 @@ const migrationConfig: MigrationConfig = {
   migrationsFolder: './src/db/out',
 };
 
+/**
+ * Returns the specified environment variable value. Throws an error
+ * if the variable is not set.
+ *
+ * @param key - Environment variable key.
+ * @returns Environment variable value.
+ */
 function envOrThrow(key: string): string {
   if (process.env[key]) {
     return process.env[key];
@@ -39,7 +46,7 @@ function envOrThrow(key: string): string {
   throw new Error(`Environment variable ${key} is not set`);
 }
 
-export const config: Config = {
+const config: Config = {
   api: {
     fileServerHits: 0,
     platform: envOrThrow('PLATFORM'),
@@ -51,9 +58,11 @@ export const config: Config = {
     migrationConfig,
   },
   jwt: {
-    defaultDuration:  60 * 60, // 1 hour in seconds
+    defaultDuration: 60 * 60, // 1 hour in seconds
     refreshDuration: 1000 * 60 * 60 * 24 * 60, // 60 days in milliseconds
     secret: envOrThrow('JWT_SECRET'),
     issuer: 'chirpy',
   },
 };
+
+export default config;

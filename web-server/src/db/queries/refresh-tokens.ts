@@ -1,7 +1,7 @@
 import { and, eq, gt, isNull } from 'drizzle-orm';
 import { db } from '../index.js';
 import { refreshTokens, type RefreshToken } from '../schema.js';
-import { config } from '../../config.js';
+import config from '../../config.js';
 
 /**
  * Creates and returns a new record for the specified refresh token and user id.
@@ -10,19 +10,22 @@ import { config } from '../../config.js';
  * @param userId - User id.
  * @returns New db record.
  */
-export async function saveRefreshToken(token: string, userId: string): Promise<RefreshToken> {
+export async function saveRefreshToken(
+  token: string,
+  userId: string,
+): Promise<RefreshToken> {
   const now = new Date();
 
   const [result] = await db
-      .insert(refreshTokens)
-      .values({
-        token,
-        userId,
-        createdAt: now,
-        updatedAt: now,
-        expiresAt: new Date(now.valueOf() + config.jwt.refreshDuration)
-      })
-      .returning();
+    .insert(refreshTokens)
+    .values({
+      token,
+      userId,
+      createdAt: now,
+      updatedAt: now,
+      expiresAt: new Date(now.valueOf() + config.jwt.refreshDuration),
+    })
+    .returning();
 
   return result;
 }
@@ -41,8 +44,8 @@ export async function getRefreshTokenRecord(token: string): Promise<RefreshToken
       and(
         eq(refreshTokens.token, token),
         isNull(refreshTokens.revokedAt),
-        gt(refreshTokens.expiresAt, new Date())
-      )
+        gt(refreshTokens.expiresAt, new Date()),
+      ),
     );
 
   return result;

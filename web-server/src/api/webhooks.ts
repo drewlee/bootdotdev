@@ -1,5 +1,5 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import { config } from '../config.js';
+import config from '../config.js';
 import { UnauthorizedError } from '../utils/custom-errors.js';
 import { updateUserToChirpyRed } from '../db/queries/users.js';
 import { getAPIKey } from '../utils/auth.js';
@@ -12,7 +12,11 @@ import { getAPIKey } from '../utils/auth.js';
  * @param res - HTTP response object.
  * @param next - Next middleware function to yield to.
  */
-export function handlerPolkaWebhook(req: Request, res: Response, next: NextFunction): void {
+export function handlerPolkaWebhook(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void {
   type PolkaRequest = {
     event: string;
     data: {
@@ -46,5 +50,5 @@ export function handlerPolkaWebhook(req: Request, res: Response, next: NextFunct
       res.status(204).end();
       next();
     })
-    .catch(next)
+    .catch(next);
 }

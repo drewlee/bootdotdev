@@ -1,16 +1,20 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import { SORT_OPTIONS, type SortOption } from '../types/index.js';
-import { BadRequestError, ForbiddenError, NotFoundError } from '../utils/custom-errors.js';
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+} from '../utils/custom-errors.js';
 import { cleanWords } from '../utils/clean-words.js';
 import {
   createChirp,
   deleteChirp,
   getAllChirps,
   getChirpById,
-  getChirpsByUserId
+  getChirpsByUserId,
 } from '../db/queries/chirps.js';
 import { getBearerToken, validateJWT } from '../utils/auth.js';
-import { config } from '../config.js';
+import config from '../config.js';
 
 /**
  * Validates and returns the corresponding sorting order from the given parameter.
@@ -36,7 +40,11 @@ function getSortOrder(sortOrder: unknown): SortOption {
  * @param res - HTTP response object.
  * @param next - Next middleware function to yield to.
  */
-export function handlerCreateChirp(req: Request, res: Response, next: NextFunction): void {
+export function handlerCreateChirp(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void {
   const { body }: { body: string } = req.body;
   const token = getBearerToken(req);
   const userId = validateJWT(token, config.jwt.secret);
@@ -73,7 +81,11 @@ export function handlerCreateChirp(req: Request, res: Response, next: NextFuncti
  * @param res - HTTP response object.
  * @param next - Next middleware function to yield to.
  */
-export function handlerGetAllChirps(req: Request, res: Response, next: NextFunction): void {
+export function handlerGetAllChirps(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void {
   const { authorId, sort } = req.query;
   const sortOrder = getSortOrder(sort);
 
@@ -130,7 +142,11 @@ export function handlerGetChirp(req: Request, res: Response, next: NextFunction)
  * @param res - HTTP response object.
  * @param next - Next middleware function to yield to.
  */
-export function handlerDeleteChirp(req: Request, res: Response, next: NextFunction): void {
+export function handlerDeleteChirp(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void {
   const token = getBearerToken(req);
   const userId = validateJWT(token, config.jwt.secret);
   let { chirpId } = req.params;
@@ -154,7 +170,7 @@ export function handlerDeleteChirp(req: Request, res: Response, next: NextFuncti
       return deleteChirp(chirpId);
     })
     .then(() => {
-      res.status(204).end()
+      res.status(204).end();
     })
     .catch(next);
 }

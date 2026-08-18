@@ -1,5 +1,5 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import { config } from '../config.js';
+import config from '../config.js';
 import type { User } from '../db/schema.js';
 import { BadRequestError } from '../utils/custom-errors.js';
 import { hashPassword } from '../utils/auth.js';
@@ -20,7 +20,11 @@ type UserResponse = Omit<User, 'hashedPassword'>;
  * @param res - HTTP response object.
  * @param next - Next middleware function to yield to.
  */
-export function handlerCreateUser(req: Request, res: Response, next: NextFunction): void {
+export function handlerCreateUser(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): void {
   const { email, password }: UserRequest = req.body;
 
   if (!email || !password) {

@@ -2,7 +2,7 @@ import express, { type NextFunction, type Request, type Response } from 'express
 import type { User } from './db/schema.js';
 import { getUserByEmail } from './db/queries/users.js';
 import { saveRefreshToken } from './db/queries/refresh-tokens.js';
-import { config } from './config.js';
+import config from './config.js';
 import {
   middlewareErrorHandler,
   middlewareLogResponse,

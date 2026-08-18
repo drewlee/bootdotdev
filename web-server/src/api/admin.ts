@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { config } from '../config.js';
+import config from '../config.js';
 import { ForbiddenError } from '../utils/custom-errors.js';
 import { deleteUsers } from '../db/queries/users.js';
 
@@ -37,6 +37,7 @@ export async function handlerReset(_: Request, res: Response): Promise<void> {
   }
 
   await deleteUsers();
+
   config.api.fileServerHits = 0;
   res.set('Content-Type', 'text/plain');
   res.write('Hits reset to 0');

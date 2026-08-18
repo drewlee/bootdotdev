@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from 'src/app.js';
-import { config } from 'src/config.js';
+import config from 'src/config.js';
 import { deleteUsers } from '../../src/db/queries/users.js';
 
 vi.mock(import('../../src/db/queries/users.js'), () => {

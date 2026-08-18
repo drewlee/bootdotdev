@@ -1,8 +1,11 @@
 import { type NextFunction, type Request, type Response } from 'express';
-import { config } from '../config.js';
+import config from '../config.js';
 import { getBearerToken, makeJWT } from '../utils/auth.js';
 import { UnauthorizedError } from '../utils/custom-errors.js';
-import { getRefreshTokenRecord, revokeRefreshToken } from '../db/queries/refresh-tokens.js';
+import {
+  getRefreshTokenRecord,
+  revokeRefreshToken,
+} from '../db/queries/refresh-tokens.js';
 
 /**
  * Handler for the POST `/api/refresh` path.
@@ -23,9 +26,9 @@ export function handlerRefresh(req: Request, res: Response, next: NextFunction):
       }
 
       const jwt = makeJWT(result.userId, config.jwt.defaultDuration, config.jwt.secret);
-      res.status(200).json({ token: jwt })
+      res.status(200).json({ token: jwt });
     })
-    .catch(next)
+    .catch(next);
 }
 
 /**
