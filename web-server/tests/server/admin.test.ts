@@ -1,13 +1,11 @@
 import request from 'supertest';
 import app from 'src/app.js';
 import config from 'src/config.js';
-import { deleteUsers } from '../../src/db/queries/users.js';
+import { deleteUsers } from 'src/db/queries/users.js';
 
-vi.mock(import('../../src/db/queries/users.js'), () => {
-  return {
-    deleteUsers: vi.fn().mockResolvedValue(null),
-  };
-});
+vi.mock(import('../../src/db/queries/users.js'), () => ({
+  deleteUsers: vi.fn().mockResolvedValue(null),
+}));
 
 const defaultPlatform = config.api.platform;
 const metricsCount = 17;

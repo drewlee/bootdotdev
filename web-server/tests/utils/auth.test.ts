@@ -85,16 +85,16 @@ describe('Bearer header token retrieval', () => {
 
   test('Throws error if missing prefix', () => {
     const auth = 'abc123xyz';
-    expect(() => extractBearerToken(auth)).toThrow(BadRequestError);
+    expect(() => extractBearerToken(auth)).toThrow(UnauthorizedError);
   });
 
   test('Throws error if missing token', () => {
     const auth = 'Bearer ';
-    expect(() => extractBearerToken(auth)).toThrow(BadRequestError);
+    expect(() => extractBearerToken(auth)).toThrow(UnauthorizedError);
   });
 
   test('Throws error for empty string', () => {
-    expect(() => extractBearerToken('')).toThrow(BadRequestError);
+    expect(() => extractBearerToken('')).toThrow(UnauthorizedError);
   });
 });
 

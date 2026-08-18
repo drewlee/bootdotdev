@@ -18,38 +18,28 @@ type UserResponse = Omit<User, 'hashedPassword'>;
  *
  * @param req - HTTP request object.
  * @param res - HTTP response object.
- * @param next - Next middleware function to yield to.
  */
-export function handlerCreateUser(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export async function handlerCreateUser(req: Request, res: Response): Promise<void> {
   const { email, password }: UserRequest = req.body;
 
   if (!email || !password) {
-    next(new BadRequestError('Missing required fields'));
-    return;
+    throw new BadRequestError('Missing required fields');
   }
 
-  hashPassword(password)
-    .then((hashedPassword) => createUser({ email, hashedPassword }))
-    .then((user) => {
-      if (!user) {
-        throw new Error('Failed to create new user');
-      }
+  const hashedPassword = await hashPassword(password);
+  const user = await createUser({ email, hashedPassword });
 
-      res.status(201).json({
-        id: user.id,
-        email: user.email,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        isChirpyRed: user.isChirpyRed,
-      } satisfies UserResponse);
+  if (!user) {
+    throw new Error('Failed to create new user');
+  }
 
-      next();
-    })
-    .catch(next);
+  res.status(201).json({
+    id: user.id,
+    email: user.email,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    isChirpyRed: user.isChirpyRed,
+  } satisfies UserResponse);
 }
 
 /**
@@ -58,34 +48,27 @@ export function handlerCreateUser(
  *
  * @param req - HTTP request object.
  * @param res - HTTP response object.
- * @param next - Next middleware function to yield to.
  */
-export function handlerUpdateUser(req: Request, res: Response, next: NextFunction) {
+export async function handlerUpdateUser(req: Request, res: Response) {
   const { email, password }: UserRequest = req.body;
   const token = getBearerToken(req);
   const userId = validateJWT(token, config.jwt.secret);
 
   if (!email || !password) {
-    next(new BadRequestError('Missing required fields'));
-    return;
+    throw new BadRequestError('Missing required fields');
   }
 
-  hashPassword(password)
-    .then((hashedPassword) => updateUser(userId, email, hashedPassword))
-    .then((user) => {
-      if (!user) {
-        throw new Error('Failed to update user');
-      }
+  const hashedPassword = await hashPassword(password);
+  const user = await updateUser(userId, email, hashedPassword);
+  if (!user) {
+    throw new Error('Failed to update user');
+  }
 
-      res.status(200).json({
-        id: user.id,
-        email: user.email,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        isChirpyRed: user.isChirpyRed,
-      } satisfies UserResponse);
-
-      next();
-    })
-    .catch(next);
+  res.status(200).json({
+    id: user.id,
+    email: user.email,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    isChirpyRed: user.isChirpyRed,
+  } satisfies UserResponse);
 }

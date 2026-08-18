@@ -33,7 +33,6 @@ export async function deleteUsers(): Promise<void> {
  */
 export async function getUserByEmail(email: string): Promise<User> {
   const [result] = await db.select().from(users).where(eq(users.email, email));
-
   return result;
 }
 
@@ -75,8 +74,6 @@ export async function updateUserToChirpyRed(userId: string): Promise<boolean> {
     .set({ isChirpyRed: true })
     .where(eq(users.id, userId))
     .returning();
-
-  console.log(result);
 
   return result.length > 0;
 }

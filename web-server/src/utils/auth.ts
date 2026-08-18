@@ -99,7 +99,7 @@ export function extractBearerToken(header: string): string {
     }
   }
 
-  throw new BadRequestError('Malformed authorization header');
+  throw new UnauthorizedError('Malformed authorization header');
 }
 
 /**
