@@ -1,7 +1,7 @@
 import request from 'supertest';
-import { testDB } from './test-db.js';
-import { createUserRecord, getAuthToken } from './helpers.js';
+import { testDB } from './lib/test-db.js';
 import { db } from 'src/db/index.js';
+import { createUserRecord, getAuthToken } from './lib/helpers.js';
 import { deleteUsers, getUserByEmail } from 'src/db/queries/users.js';
 import { checkPasswordHash } from 'src/utils/auth.js';
 import app from 'src/app.js';

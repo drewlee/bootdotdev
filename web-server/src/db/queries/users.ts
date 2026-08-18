@@ -19,6 +19,15 @@ export async function createUser(user: NewUser): Promise<User> {
 }
 
 /**
+ * Retrieves all user records.
+ *
+ * @returns All user records.
+ */
+export async function getAllUsers(): Promise<User[]> {
+  return db.select().from(users);
+}
+
+/**
  * Deletes all user records.
  */
 export async function deleteUsers(): Promise<void> {

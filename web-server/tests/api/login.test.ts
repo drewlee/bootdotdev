@@ -1,8 +1,8 @@
 import request from 'supertest';
-import { testDB } from './test-db.js';
+import { testDB } from './lib/test-db.js';
 import { db } from 'src/db/index.js';
 import { deleteUsers } from 'src/db/queries/users.js';
-import { createUserRecord } from './helpers.js';
+import { createUserRecord } from './lib/helpers.js';
 import app from 'src/app.js';
 
 vi.mock(import('../../src/db/index.js'), () => ({
