@@ -32,10 +32,7 @@ export async function deleteUsers(): Promise<void> {
  * @returns User record.
  */
 export async function getUserByEmail(email: string): Promise<User> {
-  const [result] = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email));
+  const [result] = await db.select().from(users).where(eq(users.email, email));
 
   return result;
 }
@@ -48,7 +45,11 @@ export async function getUserByEmail(email: string): Promise<User> {
  * @param hashedPassword - Hashed password.
  * @returns Updated user record.
  */
-export async function updateUser(userId: string, email: string, hashedPassword: string): Promise<User> {
+export async function updateUser(
+  userId: string,
+  email: string,
+  hashedPassword: string,
+): Promise<User> {
   const [result] = await db
     .update(users)
     .set({

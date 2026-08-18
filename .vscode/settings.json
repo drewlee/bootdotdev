@@ -1,27 +1,53 @@
 {
-    "editor.tabSize": 4,
-    "cSpell.words": [
-        "amet",
-        "asteroidfield",
-        "bookbot",
-        "bootdotdev",
-        "circleshape",
-        "cooldown",
-        "dotenv",
-        "genai",
-        "htmlnode",
-        "leafnode",
-        "mapb",
-        "morelorem",
-        "moretestdata",
-        "Pokeball",
-        "pokecache",
-        "pokedex",
-        "testdata",
-        "textnode",
-        "textnodes",
-        "tmpl",
-        "venv"
-    ],
-    "python-envs.defaultEnvManager": "ms-python.python:system"
+  "editor.tabSize": 4,
+  "[html]": {
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cSpell.words": [
+    "amet",
+    "asteroidfield",
+    "bookbot",
+    "bootdotdev",
+    "circleshape",
+    "cooldown",
+    "dotenv",
+    "genai",
+    "htmlnode",
+    "leafnode",
+    "mapb",
+    "morelorem",
+    "moretestdata",
+    "Pokeball",
+    "pokecache",
+    "pokedex",
+    "sharbert",
+    "testdata",
+    "textnode",
+    "textnodes",
+    "tmpl",
+    "venv"
+  ],
+  "python-envs.defaultEnvManager": "ms-python.python:system"
 }

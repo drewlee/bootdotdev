@@ -1,6 +1,6 @@
+import crypto from 'node:crypto';
 import argon2 from 'argon2';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
-import crypto from 'node:crypto';
 import type { Request } from 'express';
 import { UnauthorizedError, BadRequestError } from './custom-errors.js';
 
@@ -12,7 +12,7 @@ const TOKEN_ISSUER = 'chirpy';
  * Creates and returns a hash for the given password.
  *
  * @param password - Password to hash.
- * @returns Hashed password.
+ * @returns Derived hash.
  */
 export async function hashPassword(password: string): Promise<string> {
   const hash = await argon2.hash(password);
@@ -20,33 +20,36 @@ export async function hashPassword(password: string): Promise<string> {
 }
 
 /**
- * Checks whether the provided hash matches the specified password.
+ * Checks whether the provided hash matches the password.
  *
  * @param password - Password to validate.
  * @param hash - Hashed password.
  * @returns Whether the password matches the hash.
  */
-export async function checkPasswordHash(password: string, hash: string): Promise<boolean> {
+export async function checkPasswordHash(
+  password: string,
+  hash: string,
+): Promise<boolean> {
   const isMatch = await argon2.verify(hash, password);
   return isMatch;
 }
 
 /**
- * Creates and returns a new JSON web token.
+ * Creates and returns a JSON web token from the provided params.
  *
  * @param userID - User ID.
  * @param expiresIn - Expiration timestamp in seconds.
  * @param secret - Secret value for token creation.
- * @returns New JSON web token.
+ * @returns JSON web token.
  */
 export function makeJWT(userID: string, expiresIn: number, secret: string): string {
   const iat = Math.floor(Date.now() / 1000);
   const exp = iat + expiresIn;
   const payload: Payload = {
     iss: TOKEN_ISSUER, // issuer
-    sub: userID,       // subject
-    iat,               // time of issue in seconds
-    exp,               // time of expiration in seconds
+    sub: userID, // subject
+    iat, // time of issue in seconds
+    exp, // time of expiration in seconds
   };
   const token = jwt.sign(payload, secret);
 
@@ -109,7 +112,7 @@ export function getBearerToken(req: Request): string {
   const authHeader = req.get('Authorization');
 
   if (!authHeader) {
-    throw new UnauthorizedError('Malformed authorization header');  
+    throw new UnauthorizedError('Malformed authorization header');
   }
 
   return extractBearerToken(authHeader);
@@ -153,9 +156,8 @@ export function getAPIKey(req: Request): string {
   const authHeader = req.get('Authorization');
 
   if (!authHeader) {
-    throw new UnauthorizedError('Malformed authorization header');  
+    throw new UnauthorizedError('Malformed authorization header');
   }
 
   return extractAPIKey(authHeader);
 }
-

@@ -1,3 +1,4 @@
+import process from 'node:process';
 import type { NextFunction, Request, Response } from 'express';
 import { config } from '../config.js';
 import {
@@ -20,7 +21,7 @@ export function middlewareLogResponse(
   next: NextFunction,
 ): void {
   res.on('finish', () => {
-    if (res.statusCode >= 300) {
+    if (res.statusCode >= 300 && !process.env.TEST) {
       console.log(`[NON-OK] ${req.method} ${req.url} - Status: ${res.statusCode}`);
     }
   });
@@ -55,9 +56,11 @@ export function middlewareErrorHandler(
   err: Error,
   _: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void {
-  console.error(err);
+  if (!process.env.TEST) {
+    console.error(err);
+  }
 
   if (err instanceof BadRequestError) {
     res.status(400).json({ error: err.message });

@@ -1,7 +1,7 @@
 {
-  "name": "web-server",
+  "name": "chirpy-api-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Chirpy web API server",
   "author": "Andrew A. Lee",
   "type": "module",
   "main": "dist/index.js",
@@ -26,7 +26,10 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.0.1",
+    "@types/supertest": "^7.2.1",
     "drizzle-kit": "^0.31.10",
+    "prettier": "3.9.6",
+    "supertest": "^7.2.2",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
   },

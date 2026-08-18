@@ -1,5 +1,4 @@
-import { describe, test, expect, beforeAll } from 'vitest';
-import { UnauthorizedError, BadRequestError } from './custom-errors.js';
+import { UnauthorizedError, BadRequestError } from 'src/utils/custom-errors.js';
 import {
   hashPassword,
   checkPasswordHash,
@@ -7,7 +6,7 @@ import {
   validateJWT,
   extractBearerToken,
   extractAPIKey,
-} from './auth.js';
+} from 'src/utils/auth.js';
 
 describe('Password hashing', () => {
   const password1 = 'correctPassword123!';
@@ -22,7 +21,7 @@ describe('Password hashing', () => {
     ]);
   });
 
-  test('Returns `true` for the correct password', async () => {
+  test('Returns `true` for a correct password', async () => {
     const result = await checkPasswordHash(password1, hash1);
     expect(result).toBe(true);
   });
@@ -86,16 +85,16 @@ describe('Bearer header token retrieval', () => {
 
   test('Throws error if missing prefix', () => {
     const auth = 'abc123xyz';
-    expect(() => extractBearerToken(auth)).toThrow(BadRequestError)
+    expect(() => extractBearerToken(auth)).toThrow(BadRequestError);
   });
 
   test('Throws error if missing token', () => {
     const auth = 'Bearer ';
-    expect(() => extractBearerToken(auth)).toThrow(BadRequestError)
+    expect(() => extractBearerToken(auth)).toThrow(BadRequestError);
   });
 
   test('Throws error for empty string', () => {
-    expect(() => extractBearerToken('')).toThrow(BadRequestError)
+    expect(() => extractBearerToken('')).toThrow(BadRequestError);
   });
 });
 
@@ -110,15 +109,15 @@ describe('Polka API key retrieval', () => {
 
   test('Throws error if missing prefix', () => {
     const auth = 'abc123xyz';
-    expect(() => extractAPIKey(auth)).toThrow(BadRequestError)
+    expect(() => extractAPIKey(auth)).toThrow(BadRequestError);
   });
 
   test('Throws error if missing token', () => {
     const auth = 'Bearer ';
-    expect(() => extractAPIKey(auth)).toThrow(BadRequestError)
+    expect(() => extractAPIKey(auth)).toThrow(BadRequestError);
   });
 
   test('Throws error for empty string', () => {
-    expect(() => extractAPIKey('')).toThrow(BadRequestError)
+    expect(() => extractAPIKey('')).toThrow(BadRequestError);
   });
 });

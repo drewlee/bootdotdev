@@ -2,14 +2,16 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "nodenext",
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "rootDir": "..",
     "strict": true,
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "composite": true
+    "types": ["node", "vitest/globals"],
+    "noEmit": true,
+    "paths": {
+      "src/*": ["../src/*"]
+    }
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "references": [{ "path": ".." }]
 }
