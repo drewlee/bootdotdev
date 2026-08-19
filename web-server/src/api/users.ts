@@ -10,6 +10,7 @@ type UserRequest = {
   email: string;
   password: string;
 };
+
 type UserResponse = Omit<User, 'hashedPassword'>;
 
 /**

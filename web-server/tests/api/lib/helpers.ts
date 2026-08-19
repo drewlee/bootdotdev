@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { hashPassword } from 'src/utils/auth.js';
 import { createUser } from 'src/db/queries/users.js';
+import { createChirp } from 'src/db/queries/chirps.js';
 import { makeJWT } from 'src/utils/auth.js';
 import config from 'src/config.js';
 import app from 'src/app.js';
@@ -9,12 +10,20 @@ type Credentials = { email: string; password: string };
 
 export async function createUserRecord(
   user: Credentials,
-): Promise<ReturnType<typeof createUser>> {
+): ReturnType<typeof createUser> {
   const { email, password } = user;
   const hashedPassword = await hashPassword(password);
-  const response = await createUser({ email, hashedPassword });
+  const result = await createUser({ email, hashedPassword });
 
-  return response;
+  return result;
+}
+
+export async function createChirpRecord(
+  body: string,
+  userId: string,
+): ReturnType<typeof createChirp> {
+  const result = await createChirp({ body, userId });
+  return result;
 }
 
 export async function loginUser(user: Credentials): Promise<string> {

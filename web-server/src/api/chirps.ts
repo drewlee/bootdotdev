@@ -38,39 +38,28 @@ function getSortOrder(sortOrder: unknown): SortOption {
  *
  * @param req - HTTP request object.
  * @param res - HTTP response object.
- * @param next - Next middleware function to yield to.
  */
-export function handlerCreateChirp(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export async function handlerCreateChirp(req: Request, res: Response): Promise<void> {
   const { body }: { body: string } = req.body;
   const token = getBearerToken(req);
   const userId = validateJWT(token, config.jwt.secret);
 
   if (!body) {
-    next(new BadRequestError('Missing required property'));
-    return;
+    throw new BadRequestError('Missing required field');
   }
 
   if (body.length > 140) {
-    next(new BadRequestError('Chirp is too long. Max length is 140'));
-    return;
+    throw new BadRequestError('Chirp is too long. Max length is 140');
   }
 
   const cleanedBody = cleanWords(body);
 
-  createChirp({ body: cleanedBody, userId })
-    .then((chirp) => {
-      if (!chirp) {
-        throw new Error('Failed to create new chirp');
-      }
+  const chirp = await createChirp({ body: cleanedBody, userId });
+  if (!chirp) {
+    throw new Error('Failed to create new chirp');
+  }
 
-      res.status(201).json(chirp);
-      next();
-    })
-    .catch(next);
+  res.status(201).json(chirp);
 }
 
 /**
@@ -79,59 +68,41 @@ export function handlerCreateChirp(
  *
  * @param _ - HTTP request object.
  * @param res - HTTP response object.
- * @param next - Next middleware function to yield to.
  */
-export function handlerGetAllChirps(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export async function handlerGetAllChirps(req: Request, res: Response): Promise<void> {
   const { authorId, sort } = req.query;
   const sortOrder = getSortOrder(sort);
 
   if (typeof authorId === 'string' && authorId !== '') {
-    getChirpsByUserId(authorId, sortOrder)
-      .then((chirps) => {
-        res.status(200).json(chirps);
-      })
-      .catch(next);
-
+    const chirps = await getChirpsByUserId(authorId, sortOrder);
+    res.status(200).json(chirps);
     return;
   }
 
-  getAllChirps(sortOrder)
-    .then((chirps) => {
-      res.status(200).json(chirps);
-    })
-    .catch(next);
+  const chirps = await getAllChirps(sortOrder);
+  res.status(200).json(chirps);
 }
 
 /**
  * Handler for the GET `/api/chirps/:chirpId` path.
- * Retrieves all chirps.
+ * Retrieves the chirp corresponding to the specified id.
  *
  * @param _ - HTTP request object.
  * @param res - HTTP response object.
- * @param next - Next middleware function to yield to.
  */
-export function handlerGetChirp(req: Request, res: Response, next: NextFunction): void {
+export async function handlerGetChirp(req: Request, res: Response): Promise<void> {
   let { chirpId } = req.params;
 
   if (Array.isArray(chirpId)) {
     chirpId = chirpId[0];
   }
 
-  getChirpById(chirpId)
-    .then((chirp) => {
-      if (!chirp) {
-        next(new NotFoundError('Chirp not found for the corresponding id'));
-        return;
-      }
+  const chirp = await getChirpById(chirpId);
+  if (!chirp) {
+    throw new NotFoundError('Resource not found');
+  }
 
-      res.status(200).json(chirp);
-      next();
-    })
-    .catch(next);
+  res.status(200).json(chirp);
 }
 
 /**
@@ -142,11 +113,7 @@ export function handlerGetChirp(req: Request, res: Response, next: NextFunction)
  * @param res - HTTP response object.
  * @param next - Next middleware function to yield to.
  */
-export function handlerDeleteChirp(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void {
+export async function handlerDeleteChirp(req: Request, res: Response): Promise<void> {
   const token = getBearerToken(req);
   const userId = validateJWT(token, config.jwt.secret);
   let { chirpId } = req.params;
@@ -155,22 +122,15 @@ export function handlerDeleteChirp(
     chirpId = chirpId[0];
   }
 
-  getChirpById(chirpId)
-    .then((chirp) => {
-      if (!chirp) {
-        next(new NotFoundError('Chirp not found for the corresponding id'));
-        return;
-      }
+  const chirp = await getChirpById(chirpId);
+  if (!chirp) {
+    throw new NotFoundError('Resource not found');
+  }
 
-      if (chirp.userId !== userId) {
-        next(new ForbiddenError('Not authorized to delete chirp'));
-        return;
-      }
+  if (chirp.userId !== userId) {
+    throw new ForbiddenError('Not authorized');
+  }
 
-      return deleteChirp(chirpId);
-    })
-    .then(() => {
-      res.status(204).end();
-    })
-    .catch(next);
+  await deleteChirp(chirpId);
+  res.status(204).end();
 }

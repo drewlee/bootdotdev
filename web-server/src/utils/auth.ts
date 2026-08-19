@@ -90,12 +90,12 @@ export function validateJWT(tokenString: string, secret: string): string {
  * @returns Bearer authorization token.
  */
 export function extractBearerToken(header: string): string {
-  const prefix = 'Bearer ';
+  const prefix = 'Bearer';
 
-  if (header.startsWith(prefix)) {
-    const token = header.slice(prefix.length);
-    if (token.length > 0) {
-      return token;
+  if (header) {
+    const segments = header.split(' ');
+    if (segments.length >= 2 && segments[0] === prefix && segments[1]) {
+      return segments[1];
     }
   }
 
@@ -134,12 +134,12 @@ export function makeRefreshToken(): string {
  * @returns Polka API key.
  */
 export function extractAPIKey(header: string): string {
-  const prefix = 'ApiKey ';
+  const prefix = 'ApiKey';
 
-  if (header.startsWith(prefix)) {
-    const token = header.slice(prefix.length);
-    if (token.length > 0) {
-      return token;
+  if (header) {
+    const segments = header.split(' ');
+    if (segments.length >= 2 && segments[0] === prefix && segments[1]) {
+      return segments[1];
     }
   }
 
